@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import type { InitialAPI } from '@midnight-ntwrk/dapp-connector-api';
+import type { InitialAPI, ConnectedAPI } from '@midnight-ntwrk/dapp-connector-api';
 import { config } from '../lib/config';
 
 export type TransactionStatus = 'pending' | 'processing' | 'confirmed' | 'failed';
@@ -37,24 +37,36 @@ type State = {
   addActivity: (action: string, status?: TransactionStatus) => void;
 };
 
-const RETRY_DELAY_MS = 3000;
-const MAX_ATTEMPTS = 20;
+const WALLET_POLL_INTERVAL_MS = 500;
+const MAX_WALLET_POLL_MS = 10000;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const isRetryable = (message: string): boolean => {
+const isUserCancellation = (message: string): boolean => {
   const lower = message.toLowerCase();
   return (
-    lower.includes('sync') ||
-    lower.includes('indexing') ||
-    lower.includes('not ready') ||
-    lower.includes('disconnected') ||
-    lower.includes('connection') ||
-    lower.includes('timeout') ||
-    lower.includes('aborted') ||
-    lower.includes('failed to fetch') ||
-    lower.includes('network')
+    lower.includes('cancel') ||
+    lower.includes('reject') ||
+    lower.includes('denied') ||
+    lower.includes('user closed')
   );
+};
+
+const waitForWallet = async (): Promise<InitialAPI | null> => {
+  if (typeof window === 'undefined') return null;
+
+  const startTime = Date.now();
+  while (Date.now() - startTime < MAX_WALLET_POLL_MS) {
+    const wallet = Object.values(window.midnight ?? {}).find(
+      (candidate): candidate is InitialAPI =>
+        Boolean(candidate) && typeof candidate === 'object' && typeof candidate.connect === 'function',
+    );
+
+    if (wallet) return wallet;
+    await sleep(WALLET_POLL_INTERVAL_MS);
+  }
+
+  return null;
 };
 
 export const useAttendanceStore = create<State>((set, get) => ({
@@ -73,16 +85,10 @@ export const useAttendanceStore = create<State>((set, get) => ({
   activities: [],
 
   connect: async () => {
-    if (typeof window === 'undefined') return;
+    set({ isConnecting: true, isSyncing: false, walletError: undefined });
 
-    // Re-check for wallet on each attempt (extension may inject late)
-    const findWallet = (): InitialAPI | undefined =>
-      Object.values(window.midnight ?? {}).find(
-        (candidate): candidate is InitialAPI =>
-          Boolean(candidate) && typeof candidate === 'object' && typeof candidate.connect === 'function',
-      );
-
-    let wallet = findWallet();
+    // Step 1: Wait for wallet extension to be available
+    const wallet = await waitForWallet();
     if (!wallet) {
       set({
         wallet: undefined,
@@ -90,89 +96,44 @@ export const useAttendanceStore = create<State>((set, get) => ({
         isConnecting: false,
         isSyncing: false,
         walletError:
-          'No Midnight wallet detected. Install the Midnight wallet browser extension and unlock it, then try again.',
+          'No Midnight wallet detected. Please install the Midnight wallet browser extension, unlock it, and refresh the page.',
       });
       return;
     }
 
-    set({ isConnecting: true, isSyncing: false, walletError: undefined });
-
-    let connected: Awaited<ReturnType<InitialAPI['connect']>> | null = null;
-
-    // Phase 1: establish connection to the wallet extension
-    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-      try {
-        connected = await wallet.connect(config.network);
-        break;
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (isRetryable(message) && attempt < MAX_ATTEMPTS - 1) {
-          set({ isSyncing: true, isConnecting: false });
-          await sleep(RETRY_DELAY_MS);
-          set({ isConnecting: true, isSyncing: false });
-          wallet = findWallet() ?? wallet;
-          continue;
-        }
+    // Step 2: Connect to the wallet (this may prompt user for approval)
+    let connected: ConnectedAPI;
+    try {
+      connected = await wallet.connect(config.network);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      
+      // Don't retry on user cancellation
+      if (isUserCancellation(message)) {
         set({
           wallet: undefined,
           walletName: undefined,
           isConnecting: false,
           isSyncing: false,
-          walletError: message || 'Failed to connect to the Midnight wallet.',
+          walletError: 'Connection was cancelled. Click "Connect Wallet" to try again.',
         });
         return;
       }
-    }
 
-    if (!connected) {
       set({
+        wallet: undefined,
+        walletName: undefined,
         isConnecting: false,
-        walletError: 'Could not establish a connection to the Midnight wallet after multiple attempts.',
+        isSyncing: false,
+        walletError: `Failed to connect to wallet: ${message}`,
       });
       return;
     }
 
-    // Phase 2: wait for the wallet to finish syncing its chain state.
-    // getConnectionStatus() may return 'disconnected' while the wallet is still
-    // indexing — that's normal and retryable, not a hard failure.
-    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-      try {
-        const status = await connected.getConnectionStatus();
-        if (status.status === 'connected') break;
-
-        // disconnected while still syncing — wait and retry
-        if (attempt >= MAX_ATTEMPTS - 1) {
-          throw new Error(
-            'Wallet is connected to the extension but has not finished syncing with the network. ' +
-              'Open the Midnight wallet extension and wait for sync to complete, then try again.',
-          );
-        }
-
-        set({ isSyncing: true, isConnecting: false });
-        await sleep(RETRY_DELAY_MS);
-        set({ isConnecting: true, isSyncing: false });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (isRetryable(message) && attempt < MAX_ATTEMPTS - 1) {
-          set({ isSyncing: true, isConnecting: false });
-          await sleep(RETRY_DELAY_MS);
-          set({ isConnecting: true, isSyncing: false });
-          continue;
-        }
-        set({
-          wallet: undefined,
-          walletName: undefined,
-          isConnecting: false,
-          isSyncing: false,
-          walletError: message,
-        });
-        return;
-      }
-    }
-
-    // Phase 3: get the shielded address
+    // Step 3: Get the shielded address
     try {
       const { shieldedAddress } = await connected.getShieldedAddresses();
+      
       set({
         wallet: shieldedAddress,
         walletName: wallet.name,
@@ -187,7 +148,7 @@ export const useAttendanceStore = create<State>((set, get) => ({
         walletName: undefined,
         isConnecting: false,
         isSyncing: false,
-        walletError: message || 'Failed to retrieve wallet address.',
+        walletError: `Failed to get wallet address: ${message}`,
       });
     }
   },

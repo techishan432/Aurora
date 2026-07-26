@@ -40,26 +40,10 @@ export default function Home() {
 
   // Auto-connect on page load
   useEffect(() => {
-    if (!wallet && !isConnecting && !walletError) {
+    if (!wallet && !isConnecting) {
       void connect();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Auto-retry wallet connection if it fails due to syncing or connection errors
-  useEffect(() => {
-    if (wallet || isConnecting || isSyncing) return;
-    if (!walletError) return;
-    const lower = walletError.toLowerCase();
-    const shouldRetry =
-      lower.includes('sync') ||
-      lower.includes('disconnected') ||
-      lower.includes('connection') ||
-      lower.includes('timeout') ||
-      lower.includes('not ready');
-    if (!shouldRetry) return;
-    const timer = setTimeout(() => void connect(), 5000);
-    return () => clearTimeout(timer);
-  }, [wallet, isConnecting, isSyncing, walletError, connect]);
 
   const handleOpenSessionSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 import { createLogger } from '../logger-utils.js';
-import { run } from '../index.js';
+import { run } from '../deploy.js';
 import { PreprodRemoteConfig } from '../config.js';
 
 const config = new PreprodRemoteConfig();

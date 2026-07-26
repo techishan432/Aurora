@@ -72,6 +72,37 @@ This guarantees that **pseudonyms rotate per session**, preventing observers fro
 
 ---
 
+## 🔐 Privacy Model: What an Observer Can and Cannot Learn
+
+### ✅ What an on-chain observer **CAN** learn:
+- That a contract deployment transaction occurred
+- That an `openSession` transaction was submitted (attendance window opened)
+- That one or more `checkIn` transactions occurred during an open session
+- The total number of check-ins per session
+- When sessions were opened and closed (block timestamps)
+- The salted `courseCommitment` (a 32-byte hash, not the plaintext course name)
+- The salted `attendanceCommitment` (a 32-byte hash of the evidence)
+- The rotating `studentPseudonym` (changes every session, not linkable to identity)
+- The transaction hashes and block heights
+
+### ❌ What an on-chain observer **CANNOT** learn:
+- The plaintext course name or code (e.g., "CS401")
+- Any student's real name, ID number, or roster information
+- Which specific students attended which sessions
+- Whether the same student attended multiple sessions (pseudonyms rotate per session)
+- The actual evidence or biometric data used for verification
+- The registrar's real identity (only a salted key hash is visible)
+- Whether a check-in was legitimate or fraudulent (only the proof validity is verified)
+
+### 🛡️ How Midnight's Privacy Model Enables This:
+1. **Off-chain witness evaluation**: All private state (student identity, evidence, secret keys) is computed locally in the user's browser wallet, never touching the network
+2. **Zero-knowledge proofs**: The ZK circuit proves that valid inputs were provided without revealing the inputs themselves
+3. **Salted commitments**: Course names and evidence are hashed with random salts before being stored on-chain
+4. **Rotating pseudonyms**: Student pseudonyms are derived from the session sequence number, making cross-session correlation impossible
+5. **Private state isolation**: Each user's wallet maintains their own private state independently
+
+---
+
 ## 🚀 How User Works With It
 
 ### 1. Instructor Workflow (Opening & Closing Sessions)

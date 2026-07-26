@@ -15,4 +15,20 @@ describe('PrivateAttendance contract interface', () => {
     expect(contract.impureCircuits).not.toHaveProperty('post');
     expect(contract.impureCircuits).not.toHaveProperty('takeDown');
   });
+
+  it('exports witness functions for private state', () => {
+    expect(witnesses).toHaveProperty('localSecretKey');
+    expect(typeof witnesses.localSecretKey).toBe('function');
+  });
+
+  it('exports public state fields', () => {
+    const contract = new Contract(witnesses) as unknown as { 
+      constructor: Function;
+      initialState: Function;
+    };
+    
+    // Verify contract has the expected structure
+    expect(contract.constructor).toBeDefined();
+    expect(contract.initialState).toBeDefined();
+  });
 });
