@@ -20,6 +20,7 @@ export default function Home() {
     wallet,
     walletName,
     isConnecting,
+    isSyncing,
     walletError,
     sessionState,
     courseCode,
@@ -106,8 +107,8 @@ export default function Home() {
               <span className="wallet-address">{shortenAddress(wallet)}</span>
             </button>
           ) : (
-            <button className="btn-primary" onClick={() => void connect()} disabled={isConnecting}>
-              <span>{isConnecting ? 'Connecting…' : 'Connect Wallet'}</span>
+            <button className="btn-primary" onClick={() => void connect()} disabled={isConnecting || isSyncing}>
+              <span>{isSyncing ? 'Syncing wallet…' : isConnecting ? 'Connecting…' : 'Connect Wallet'}</span>
             </button>
           )}
         </div>
