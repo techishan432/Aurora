@@ -10,4 +10,8 @@ export interface AttendanceContractClient {
   subscribe(listener: (transaction: AttendanceTransaction) => void): () => void;
 }
 
-export const CONTRACT_ADDRESS = '<YOUR_DEPLOYED_CONTRACT_ADDRESS>';
+// Resolved at build time from NEXT_PUBLIC_CONTRACT_ADDRESS env var.
+// After deploying the contract, set this in attendance-ui/.env.local
+export const CONTRACT_ADDRESS =
+  process.env['NEXT_PUBLIC_CONTRACT_ADDRESS'] ?? '<YOUR_DEPLOYED_CONTRACT_ADDRESS>';
+

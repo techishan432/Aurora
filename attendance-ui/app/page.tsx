@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { config } from '../lib/config';
 import { useAttendanceStore } from '../store/use-attendance-store';
 
@@ -25,7 +25,6 @@ export default function Home() {
     sessionState,
     courseCode,
     studentPseudonym,
-    openSessionsCount,
     privateCheckInsCount,
     successRate,
     sequenceNumber,
@@ -38,12 +37,14 @@ export default function Home() {
     submitCheckIn,
   } = useAttendanceStore();
 
-  // Auto-connect on page load
+  // Auto-connect on page load — ref guard prevents Strict Mode double-fire
+  const hasConnected = useRef(false);
   useEffect(() => {
-    if (!wallet && !isConnecting) {
+    if (!wallet && !isConnecting && !hasConnected.current) {
+      hasConnected.current = true;
       void connect();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // empty deps: intentional one-time connect on mount
 
   const handleOpenSessionSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,10 +75,7 @@ export default function Home() {
         </div>
 
         <div className="nav-tabs">
-          <button
-            className={`tab-btn ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveTab('home')}
-          >
+          <button className={`tab-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
             Home
           </button>
           <button
@@ -143,7 +141,9 @@ export default function Home() {
         <div className="aside-banner" role="alert">
           <span>⚠️</span>
           <div className="notice-message">{walletError}</div>
-          <button className="notice-dismiss" type="button" onClick={clearWalletError} aria-label="Dismiss notice">×</button>
+          <button className="notice-dismiss" type="button" onClick={clearWalletError} aria-label="Dismiss notice">
+            ×
+          </button>
         </div>
       )}
 
@@ -157,7 +157,9 @@ export default function Home() {
               </div>
               <h2>Verifiable Student Check-Ins with Zero Plaintext Leakage</h2>
               <p>
-                Empower educational institutions with privacy-first attendance on the Midnight ledger. Instructors open cryptographically sealed sessions; students prove presence without disclosing identities, real names, or student IDs on-chain.
+                Empower educational institutions with privacy-first attendance on the Midnight ledger. Instructors open
+                cryptographically sealed sessions; students prove presence without disclosing identities, real names, or
+                student IDs on-chain.
               </p>
               <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
                 <button
@@ -172,10 +174,7 @@ export default function Home() {
                 >
                   {sessionState === 'OPEN' ? 'Submit ZK Check-In' : 'Open Attendance Session'}
                 </button>
-                <button
-                  className="btn-secondary"
-                  onClick={() => setActiveTab('dashboard')}
-                >
+                <button className="btn-secondary" onClick={() => setActiveTab('dashboard')}>
                   Go to Dashboard
                 </button>
               </div>
@@ -186,7 +185,10 @@ export default function Home() {
           <section className="stats">
             <div className="stat-card">
               <div className="stat-label">Session Status</div>
-              <div className="stat-val" style={{ color: sessionState === 'OPEN' ? '#10b981' : '#64748b', fontSize: '1.5rem' }}>
+              <div
+                className="stat-val"
+                style={{ color: sessionState === 'OPEN' ? '#10b981' : '#64748b', fontSize: '1.5rem' }}
+              >
                 {sessionState === 'OPEN' ? '● OPEN NOW' : 'CLOSED'}
               </div>
             </div>
@@ -209,24 +211,48 @@ export default function Home() {
             <article className="panel">
               <h3 style={{ marginTop: 0, fontSize: '1.25rem' }}>🛡️ Zero-Knowledge Guarantee</h3>
               <p style={{ color: '#64748b', fontSize: '0.95rem' }}>
-                The Compact smart contract uses Midnight's private witness architecture to guarantee complete student privacy:
+                The Compact smart contract uses Midnight&apos;s private witness architecture to guarantee complete
+                student privacy:
               </p>
               <ul style={{ paddingLeft: '20px', color: '#334155', fontSize: '0.9rem', lineHeight: '1.8' }}>
-                <li><strong>Public Ledger:</strong> Salted course commitments, rotating pseudonyms, and timestamp sequence counters.</li>
-                <li><strong>Private Wallet Witness:</strong> Private keys, student identity numbers, course rosters, and salted evidence.</li>
-                <li><strong>Unlinkable Pseudonyms:</strong> Every check-in uses a sequence-derived hash function preventing cross-session tracking.</li>
+                <li>
+                  <strong>Public Ledger:</strong> Salted course commitments, rotating pseudonyms, and timestamp sequence
+                  counters.
+                </li>
+                <li>
+                  <strong>Private Wallet Witness:</strong> Private keys, student identity numbers, course rosters, and
+                  salted evidence.
+                </li>
+                <li>
+                  <strong>Unlinkable Pseudonyms:</strong> Every check-in uses a sequence-derived hash function
+                  preventing cross-session tracking.
+                </li>
               </ul>
             </article>
 
             <article className="panel">
               <h3 style={{ marginTop: 0, fontSize: '1.25rem' }}>⚡ Active Session Overview</h3>
-              <div style={{ background: '#f0fdf4', padding: '16px', borderRadius: '14px', border: '1px solid #a7f3d0', marginBottom: '16px' }}>
+              <div
+                style={{
+                  background: '#f0fdf4',
+                  padding: '16px',
+                  borderRadius: '14px',
+                  border: '1px solid #a7f3d0',
+                  marginBottom: '16px',
+                }}
+              >
                 <div style={{ fontSize: '0.85rem', color: '#047857', fontWeight: 600 }}>CURRENT COURSE</div>
                 <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#064e3b', marginTop: '4px' }}>
                   {courseCode || 'No active session'}
                 </div>
                 <div style={{ fontSize: '0.85rem', color: '#059669', marginTop: '8px' }}>
-                  {wallet ? <>Connected wallet: <code>{walletName ?? 'Midnight wallet'}</code></> : 'No wallet connected'}
+                  {wallet ? (
+                    <>
+                      Connected wallet: <code>{walletName ?? 'Midnight wallet'}</code>
+                    </>
+                  ) : (
+                    'No wallet connected'
+                  )}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '12px' }}>
@@ -256,14 +282,17 @@ export default function Home() {
           <section className="grid-2">
             {/* Instructor Panel */}
             <article className="panel">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}
+              >
                 <h3 style={{ margin: 0 }}>Instructor Session Manager</h3>
                 <span className={`badge-status ${sessionState === 'OPEN' ? 'badge-confirmed' : 'badge-pending'}`}>
                   {sessionState}
                 </span>
               </div>
               <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-                Open an attendance window for a course module. A salted 32-byte course commitment will be published to the ledger.
+                Open an attendance window for a course module. A salted 32-byte course commitment will be published to
+                the ledger.
               </p>
               <div className="form-group">
                 <label>Target Course Code</label>
@@ -306,16 +335,30 @@ export default function Home() {
                 />
               </div>
 
-              <div style={{ background: '#f8fafc', padding: '12px 14px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px', fontSize: '0.85rem' }}>
+              <div
+                style={{
+                  background: '#f8fafc',
+                  padding: '12px 14px',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  marginBottom: '20px',
+                  fontSize: '0.85rem',
+                }}
+              >
                 <span style={{ color: '#64748b' }}>Generated Pseudonym: </span>
-                <code style={{ color: '#10b981', fontWeight: 600 }}>{studentPseudonym || 'Unavailable until a real check-in is submitted'}</code>
+                <code style={{ color: '#10b981', fontWeight: 600 }}>
+                  {studentPseudonym || 'Unavailable until a real check-in is submitted'}
+                </code>
               </div>
 
               <button
                 className="btn-primary"
                 disabled={sessionState === 'CLOSED'}
                 onClick={() => submitCheckIn(inputStudentId, inputCourseCode)}
-                style={{ opacity: sessionState === 'CLOSED' ? 0.6 : 1, cursor: sessionState === 'CLOSED' ? 'not-allowed' : 'pointer' }}
+                style={{
+                  opacity: sessionState === 'CLOSED' ? 0.6 : 1,
+                  cursor: sessionState === 'CLOSED' ? 'not-allowed' : 'pointer',
+                }}
               >
                 {sessionState === 'CLOSED' ? 'Session Closed' : 'Generate ZK Proof & Check In'}
               </button>
@@ -330,7 +373,9 @@ export default function Home() {
           <section className="grid-3">
             <div className="stat-card">
               <div className="stat-label">Privacy Leakage Rate</div>
-              <div className="stat-val" style={{ color: '#64748b' }}>—</div>
+              <div className="stat-val" style={{ color: '#64748b' }}>
+                —
+              </div>
               <small style={{ color: '#64748b' }}>No proof data loaded</small>
             </div>
             <div className="stat-card">
@@ -340,7 +385,9 @@ export default function Home() {
             </div>
             <div className="stat-card">
               <div className="stat-label">Wallet Connection</div>
-              <div className="stat-val" style={{ fontSize: '1.1rem' }}>{wallet ? 'Connected' : 'Not connected'}</div>
+              <div className="stat-val" style={{ fontSize: '1.1rem' }}>
+                {wallet ? 'Connected' : 'Not connected'}
+              </div>
               <small style={{ color: '#64748b' }}>{wallet ? wallet : 'Connect a Midnight wallet to continue'}</small>
             </div>
           </section>
@@ -364,7 +411,9 @@ export default function Home() {
       {activeTab === 'activity' && (
         <div className="tab-content">
           <article className="panel">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}
+            >
               <h3 style={{ margin: 0 }}>On-Chain Transaction Audit Feed</h3>
               <span className="eyebrow">
                 <span className="status-dot"></span> LIVE AUDIT LOG
@@ -373,21 +422,19 @@ export default function Home() {
 
             {activities.length === 0 ? (
               <p style={{ color: '#64748b' }}>No on-chain transactions have been loaded.</p>
-            ) : activities.map((act) => (
-              <div className="activity-item" key={act.id}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0f172a' }}>
-                    {act.action}
+            ) : (
+              activities.map((act) => (
+                <div className="activity-item" key={act.id}>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.95rem', color: '#0f172a' }}>{act.action}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>
+                      Hash: <code>{act.hash}</code> • {new Date(act.at).toLocaleTimeString()}
+                    </div>
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>
-                    Hash: <code>{act.hash}</code> • {new Date(act.at).toLocaleTimeString()}
-                  </div>
+                  <span className={`badge-status badge-${act.status}`}>{act.status}</span>
                 </div>
-                <span className={`badge-status badge-${act.status}`}>
-                  {act.status}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </article>
         </div>
       )}
@@ -400,13 +447,33 @@ export default function Home() {
             <div style={{ display: 'grid', gap: '16px', marginTop: '20px' }}>
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>CONTRACT ADDRESS</label>
-                <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', marginTop: '4px' }}>
+                <div
+                  style={{
+                    background: '#f8fafc',
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    marginTop: '4px',
+                  }}
+                >
                   <code>{config.contractAddress}</code>
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>MIDNIGHT NETWORK ENVIRONMENT</label>
-                <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', marginTop: '4px', color: '#10b981', fontWeight: 600 }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>
+                  MIDNIGHT NETWORK ENVIRONMENT
+                </label>
+                <div
+                  style={{
+                    background: '#f8fafc',
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    marginTop: '4px',
+                    color: '#10b981',
+                    fontWeight: 600,
+                  }}
+                >
                   {config.network.toUpperCase()}
                 </div>
               </div>
@@ -427,7 +494,8 @@ export default function Home() {
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <h3 style={{ marginTop: 0 }}>Open Attendance Session</h3>
             <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-              Specify the course code. A 32-byte course commitment will be generated off-chain and submitted to the Midnight contract.
+              Specify the course code. A 32-byte course commitment will be generated off-chain and submitted to the
+              Midnight contract.
             </p>
             <form onSubmit={handleOpenSessionSubmit}>
               <div className="form-group">
@@ -459,7 +527,8 @@ export default function Home() {
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>
             <h3 style={{ marginTop: 0 }}>Submit Private ZK Check-In</h3>
             <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-              Your private key generates a salted evidence proof. The public ledger receives only your rotating pseudonym.
+              Your private key generates a salted evidence proof. The public ledger receives only your rotating
+              pseudonym.
             </p>
             <form onSubmit={handleCheckInSubmit}>
               <div className="form-group">
