@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { config } from '../lib/config';
 import { useAttendanceStore } from '../store/use-attendance-store';
 
@@ -37,6 +37,21 @@ export default function Home() {
     closeSession,
     submitCheckIn,
   } = useAttendanceStore();
+
+  // Auto-connect on page load
+  useEffect(() => {
+    if (!wallet && !isConnecting && !walletError) {
+      void connect();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-retry wallet connection if it fails due to syncing
+  useEffect(() => {
+    if (wallet || isConnecting || isSyncing) return;
+    if (!walletError || !walletError.toLowerCase().includes('sync')) return;
+    const timer = setTimeout(() => void connect(), 5000);
+    return () => clearTimeout(timer);
+  }, [wallet, isConnecting, isSyncing, walletError, connect]);
 
   const handleOpenSessionSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,8 +122,21 @@ export default function Home() {
               <span className="wallet-address">{shortenAddress(wallet)}</span>
             </button>
           ) : (
-            <button className="btn-primary" onClick={() => void connect()} disabled={isConnecting || isSyncing}>
-              <span>{isSyncing ? 'Syncing wallet…' : isConnecting ? 'Connecting…' : 'Connect Wallet'}</span>
+            <button
+              className="btn-primary"
+              onClick={() => void connect()}
+              disabled={isConnecting || isSyncing}
+              style={{ minWidth: '160px' }}
+            >
+              <span>
+                {isSyncing
+                  ? '⏳ Syncing wallet…'
+                  : isConnecting
+                    ? 'Connecting…'
+                    : walletError?.toLowerCase().includes('sync')
+                      ? 'Retrying in 5s…'
+                      : 'Connect Wallet'}
+              </span>
             </button>
           )}
         </div>
@@ -119,7 +147,9 @@ export default function Home() {
         <div className="aside-banner deployment-banner">
           <span>⚠️</span>
           <div>
-            <strong>Contract not configured.</strong> Set <code>NEXT_PUBLIC_CONTRACT_ADDRESS</code> in <code>.env.local</code> to enable transactions.
+            <strong>Contract not deployed yet.</strong> Run{' '}
+            <code>npm run preprod-remote --workspace=@midnight-ntwrk/attendance-cli</code> to deploy, then set{' '}
+            <code>NEXT_PUBLIC_CONTRACT_ADDRESS</code> in <code>attendance-ui/.env.local</code>.
           </div>
         </div>
       )}

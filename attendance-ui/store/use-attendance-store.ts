@@ -39,6 +39,7 @@ type State = {
 
 const SYNC_POLL_INTERVAL_MS = 2000;
 const MAX_SYNC_ATTEMPTS = 15;
+const AUTO_RETRY_DELAY_MS = 5000;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -125,7 +126,7 @@ export const useAttendanceStore = create<State>((set, get) => ({
       isConnecting: false,
       isSyncing: false,
       walletError: isSyncingError(message)
-        ? 'Wallet is still syncing with the Midnight network. Make sure your proof server is running (docker compose up) and wait for the wallet to finish syncing, then try again.'
+        ? `Wallet is still syncing with the Midnight network. Ensure the Midnight wallet extension is unlocked and the proof server is running (docker compose up -d proof-server). Auto-retrying…`
         : message,
     });
   },
