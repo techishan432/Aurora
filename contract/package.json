@@ -18,7 +18,7 @@
     "compact": "compact compile src/attendance.compact ./src/managed/attendance",
     "lint": "eslint src",
     "prepack": "npm run build",
-    "test": "vitest",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
