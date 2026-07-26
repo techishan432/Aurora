@@ -60,5 +60,8 @@ jspm_packages/
 # Compact
 managed/
 
+# Next.js
+.next/
+
 .claude
 .midnight-expert
