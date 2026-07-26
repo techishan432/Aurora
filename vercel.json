@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd attendance-ui && npm install && npm run build",
+  "outputDirectory": "attendance-ui/.next",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "rootDirectory": "attendance-ui"
+}
