@@ -74,17 +74,24 @@ export class AttendanceSimulator {
     return this.circuitContext.currentPrivateState;
   }
 
-  public post(message: string): Ledger {
-    // Update the current context to be the result of executing the circuit.
-    this.circuitContext = this.contract.impureCircuits.post(
+  public openSession(course: Uint8Array): Ledger {
+    this.circuitContext = this.contract.impureCircuits.openSession(
       this.circuitContext,
-      message,
+      course,
     ).context;
     return ledger(this.circuitContext.currentQueryContext.state);
   }
 
-  public takeDown(): Ledger {
-    this.circuitContext = this.contract.impureCircuits.takeDown(
+  public checkIn(evidence: Uint8Array): Ledger {
+    this.circuitContext = this.contract.impureCircuits.checkIn(
+      this.circuitContext,
+      evidence,
+    ).context;
+    return ledger(this.circuitContext.currentQueryContext.state);
+  }
+
+  public closeSession(): Ledger {
+    this.circuitContext = this.contract.impureCircuits.closeSession(
       this.circuitContext,
     ).context;
     return ledger(this.circuitContext.currentQueryContext.state);
