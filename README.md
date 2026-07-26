@@ -36,6 +36,7 @@ Every check-in is a **zero-knowledge proof** — the public ledger only ever see
 **No student ID, no name, no wallet address is ever published.**
 
 ---
+![Private Student Attendance System](image.png)
 
 ## 🛡️ Midnight Privacy Model: What an Observer Learns vs Cannot Learn
 
