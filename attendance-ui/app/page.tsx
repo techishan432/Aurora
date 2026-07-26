@@ -45,10 +45,18 @@ export default function Home() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-retry wallet connection if it fails due to syncing
+  // Auto-retry wallet connection if it fails due to syncing or connection errors
   useEffect(() => {
     if (wallet || isConnecting || isSyncing) return;
-    if (!walletError || !walletError.toLowerCase().includes('sync')) return;
+    if (!walletError) return;
+    const lower = walletError.toLowerCase();
+    const shouldRetry =
+      lower.includes('sync') ||
+      lower.includes('disconnected') ||
+      lower.includes('connection') ||
+      lower.includes('timeout') ||
+      lower.includes('not ready');
+    if (!shouldRetry) return;
     const timer = setTimeout(() => void connect(), 5000);
     return () => clearTimeout(timer);
   }, [wallet, isConnecting, isSyncing, walletError, connect]);
@@ -124,18 +132,21 @@ export default function Home() {
           ) : (
             <button
               className="btn-primary"
-              onClick={() => void connect()}
+              onClick={() => {
+                clearWalletError();
+                void connect();
+              }}
               disabled={isConnecting || isSyncing}
-              style={{ minWidth: '160px' }}
+              style={{ minWidth: '180px' }}
             >
               <span>
                 {isSyncing
-                  ? '⏳ Syncing wallet…'
+                  ? '⏳ Syncing chain state…'
                   : isConnecting
-                    ? 'Connecting…'
-                    : walletError?.toLowerCase().includes('sync')
-                      ? 'Retrying in 5s…'
-                      : 'Connect Wallet'}
+                    ? '🔌 Connecting…'
+                    : walletError
+                      ? '🔄 Retry Connection'
+                      : '🦊 Connect Wallet'}
               </span>
             </button>
           )}
