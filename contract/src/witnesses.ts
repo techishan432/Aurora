@@ -14,7 +14,7 @@
 // limitations under the License.
 
 /*
- * This file defines the shape of the bulletin board's private state,
+ * This file defines the shape of the attendance contract's private state,
  * as well as the single witness function that accesses it.
  */
 
@@ -22,7 +22,7 @@ import { Ledger } from "./managed/attendance/contract/index.js";
 import { WitnessContext } from "@midnight-ntwrk/midnight-js-protocol/compact-runtime";
 
 /* **********************************************************************
- * The only hidden state needed by the bulletin board contract is
+ * The only hidden state needed by the attendance contract is
  * the user's secret key.  Some of the library code and
  * compiler-generated code is parameterized by the type of our
  * private state, so we define a type for it and a function to
@@ -38,7 +38,7 @@ export const createAttendancePrivateState = (secretKey: Uint8Array) => ({
 });
 
 /* **********************************************************************
- * The witnesses object for the bulletin board contract is an object
+ * The witnesses object for the attendance contract is an object
  * with a field for each witness function, mapping the name of the function
  * to its implementation.
  *

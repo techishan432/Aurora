@@ -94,7 +94,7 @@ updates:
     labels:
       - 'dependencies'
       - 'npm'
-      - 'counter-cli'
+      - 'attendance-cli'
     versioning-strategy: auto
 
     groups:
