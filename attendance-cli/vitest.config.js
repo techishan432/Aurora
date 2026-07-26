@@ -1,4 +1,4 @@
-// This file is part of midnightntwrk/example-counter.
+// This file is part of midnightntwrk/example-attendance.
 // Copyright (C) Midnight Foundation
 // SPDX-License-Identifier: Apache-2.0
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ export default defineConfig({
         branches: 50,
         functions: 73,
         lines: 72,
-        statements: -269,
+        statements: 72,
       },
     },
     reporters: ['default', ['junit', { outputFile: 'reports/report.xml' }]],
