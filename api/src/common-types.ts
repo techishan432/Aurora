@@ -8,4 +8,9 @@ export type AttendanceSession = {
 };
 export type AttendanceAction = 'openSession' | 'checkIn' | 'closeSession';
 export type TransactionLifecycle = 'pending' | 'processing' | 'confirmed' | 'failed';
-export type AttendanceTransaction = { id: string; action: AttendanceAction; status: TransactionLifecycle; error?: string };
+export type AttendanceTransaction = {
+  id: string;
+  action: AttendanceAction;
+  status: TransactionLifecycle;
+  error?: string;
+};
