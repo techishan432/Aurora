@@ -3,6 +3,7 @@
 > A privacy-preserving zero-knowledge student attendance platform built on the Midnight Network using Compact smart contracts.
 
 [![CI/CD Pipeline](https://github.com/techishan432/psa/actions/workflows/ci.yml/badge.svg)](https://github.com/techishan432/psa/actions)
+[![Demo Video](https://img.shields.io/badge/Demo-YouTube-ff0000?logo=youtube)](https://youtu.be/aPLioWkmiYI)
 [![Midnight Preprod](https://img.shields.io/badge/Midnight-Preprod-7c3aed?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=)](https://midnight.network)
 [![Compact Language](https://img.shields.io/badge/Compact-v0.23-6366f1)](https://docs.midnight.network)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24.11.1-339933?logo=node.js)](https://nodejs.org)
@@ -16,6 +17,7 @@
 | Resource | Link |
 |----------|------|
 | 🌐 **Live Web Application** | [http://localhost:3000](http://localhost:3000) (run locally) |
+| 📺 **Demo Video** | [https://youtu.be/aPLioWkmiYI](https://youtu.be/aPLioWkmiYI) |
 | 📦 **GitHub Repository** | [https://github.com/techishan432/psa](https://github.com/techishan432/psa) |
 | ⚙️ **CI/CD Workflow** | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) |
 | 📄 **Compact Contract** | [`contract/src/attendance.compact`](contract/src/attendance.compact) |
