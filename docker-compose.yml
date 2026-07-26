@@ -1,0 +1,9 @@
+services:
+  attendance-ui:
+    build: .
+    env_file: attendance-ui/.env.local
+    ports: ["3000:3000"]
+  proof-server:
+    image: midnightntwrk/proof-server:8.1.0
+    environment: ["PORT=6300"]
+    ports: ["6300:6300"]

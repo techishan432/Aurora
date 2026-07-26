@@ -1,277 +1,149 @@
-# Bulletin Board DApp
+# Private Student Attendance (PSA) on Midnight
 
-This project is built on the [Midnight Network](https://midnight.network/).
+A production-ready, zero-knowledge (ZK) student attendance verification system built for the **Midnight Network**. Instructors open and close attendance windows while students submit verifiable check-ins without revealing real names, student IDs, rosters, or raw physical evidence on the public ledger.
 
-[![Generic badge](https://img.shields.io/badge/Compact%20Compiler-0.30.0-1abc9c.svg)](https://shields.io/)
-[![Generic badge](https://img.shields.io/badge/TypeScript-5.9.3-blue.svg)](https://shields.io/)
+---
 
+## 🏗️ System Architecture
 
-> **Use this repo as a template. Do not fork it.**
->  
-> This repository is intended to be used via GitHub’s “Use this template” flow.  
-> Forking this repo is discouraged, as forks are not tracked as independent projects.
+The Private Student Attendance platform follows Midnight's **hybrid public/private state paradigm**, separating local private witnesses from public ledger state.
 
-A Midnight smart contract example demonstrating a simple one-item bulletin board with zero-knowledge proofs on testnet. Users can post a single message at a time, and only the message author can remove it.
+```mermaid
+flowchart TB
+    subgraph Client ["Client & Browser Environment (attendance-ui)"]
+        UI["Next.js 16 / React 19 UI\n(White Patterned Design)"]
+        Store["Zustand State Store\n(Session & Activity Lifecycle)"]
+        Wallet["Midnight Wallet Extension / DApp Connector"]
+        Witness["Private Witness Engine\n(witnesses.ts)"]
+    end
 
-## Project Structure
+    subgraph ZKProof ["Zero-Knowledge Proof Pipeline"]
+        Prover["Compact ZK Prover\n(Local Witness Computation)"]
+        SaltedComm["Salted Commitments Generator\n(32-Byte Hashing)"]
+    end
 
+    subgraph Ledger ["Midnight Network (Preprod / Mainnet)"]
+        Contract["Compact Smart Contract\n(attendance.compact)"]
+        State["Session State\n(READY | OPEN | CLOSED)"]
+        Commitments["Public Ledger Commitments\n(Course & Student Pseudonyms)"]
+        Sequence["Counter Sequence"]
+    end
+
+    UI <--> Store
+    UI <--> Wallet
+    Wallet --> Witness
+    Witness --> SaltedComm
+    SaltedComm --> Prover
+    Prover -->|ZK Proof Transaction| Contract
+    Contract --> State
+    Contract --> Commitments
+    Contract --> Sequence
 ```
-bulletin-board/
-├── contract/               # Smart contract in Compact language
-│   └── src/               # Contract source and utilities
-├── api/                   # Methods, classes and types for CLI and UI
-├── bboard-cli/            # Command-line interface
-│   └── src/               # CLI implementation
-└── bboard-ui/             # Web browser interface
-    └── src/               # Web UI implementation
-```
 
-## Prerequisites
+### Component Breakdown
 
-### 1. Node.js Version Check
+| Package / Directory | Technology | Purpose |
+|---|---|---|
+| `contract/src/attendance.compact` | Compact 0.23 | Smart contract definitions, circuit logic (`openSession`, `checkIn`, `closeSession`), and state variables |
+| `contract/src/witnesses.ts` | TypeScript | Private witness implementation for local secret key hash generation |
+| `attendance-ui/app` | Next.js 16, React 19, CSS3 | Production white-patterned UI with emerald green tint animations and multi-tab workflow |
+| `attendance-ui/store` | Zustand 5 | State management for wallet connection, active session state, and activity logs |
+| `api/src` | TypeScript | Midnight network connector interface, contract binding types, and serialization helpers |
+| `attendance-cli` | TypeScript CLI | Command-line tool for interacting directly with Midnight ZK circuits |
 
-You need Node.js:
+---
 
+## 🔒 Zero-Knowledge Privacy Model
+
+Midnight ensures complete student privacy through **off-chain witness evaluation**:
+
+| Attribute | Public Ledger State | Private Client Witness State |
+|---|---|---|
+| **Session Status** | `OPEN`, `CLOSED`, `READY` | — |
+| **Registrar Identity** | Salted Registrar Key Hash | Private Secret Key (`sk`) |
+| **Course ID** | 32-byte `courseCommitment` | Plaintext Course Code (e.g. `CS401`) |
+| **Student Identity** | Rotating `studentPseudonym` | Student Name, ID, & Roster |
+| **Evidence Proof** | 32-byte `attendanceCommitment` | Location / Biometric Evidence & Salt |
+
+### Rotating Pseudonyms & Commitment Math
+Each student check-in evaluates a deterministic, sequence-salted persistent hash:
+$$\text{Pseudonym} = \text{persistentHash}(\text{"psa:student:"}, \text{sequence}, \text{secretKey})$$
+This guarantees that **pseudonyms rotate per session**, preventing observers from cross-linking student participation across different courses or dates.
+
+---
+
+## 🚀 How User Works With It
+
+### 1. Instructor Workflow (Opening & Closing Sessions)
+1. **Connect Wallet:** The instructor navigates to the **Dashboard** and connects their Midnight wallet.
+2. **Open Session:**
+   - Enter the target course code (e.g., `CS401-COMPACT-ZK`).
+   - Click **Open Attendance Session**.
+   - The browser generates a 32-byte salted `courseCommitment` and executes the `openSession` circuit.
+   - The contract state transitions to `SessionState.OPEN`.
+3. **Close Session:**
+   - When the attendance window finishes, click **Close Active Session**.
+   - Executing `closeSession` verifies registrar authority, transitions state to `CLOSED`, and increments the `sequence` counter.
+
+### 2. Student Workflow (Submitting Private Check-In)
+1. **Connect Wallet:** The student opens the application and connects their wallet.
+2. **Submit Private Check-In:**
+   - Click **Submit ZK Check-In** on the Home or Dashboard page.
+   - Provide the student ID / evidence proof (processed locally within the browser witness).
+   - The client computes a salted attendance commitment and rotating pseudonym.
+   - The ZK proof is sent to the Midnight contract via `checkIn(evidence)`.
+   - The check-in is recorded on-chain **without exposing the student's real identity**.
+
+### 3. Auditor & Admin Workflow (Verification)
+1. **Audit Log Inspection:** Navigate to the **Activity Audit** tab to inspect all live transaction hashes and statuses (`confirmed`, `processing`, `pending`).
+2. **Analytics Monitoring:** View total commitment counts, proof verification meters, and zero plaintext leakage indicators.
+
+---
+
+## 🛠️ Development & Production Setup
+
+### Prerequisites
+- **Node.js**: `>=24.11.1`
+- **Compact Compiler**: Installed via Midnight SDK toolchain
+- **Docker & Docker Compose**: Optional for containerized deployment
+
+### Installation
 ```bash
-node --version
-```
-
-Expected output: `v24.11.1` or higher. The repository includes an [.nvmrc](./.nvmrc) pinned to `24.11.1`.
-
-If you get a lower version: [Install Node.js LTS](https://nodejs.org/).
-
-### 2. Docker Installation
-
-The [proof server](https://docs.midnight.network/develop/tutorial/using/proof-server) runs in Docker and is required for both CLI and UI to generate zero-knowledge proofs:
-
-```bash
-docker --version
-```
-
-Expected output: `Docker version X.X.X`.
-
-If Docker is not found: [Install Docker Desktop](https://docs.docker.com/desktop/). Make sure Docker Desktop is running.
-
-### 3. Lace Wallet Extension (UI Only)
-
-For the web interface, install the official Lace wallet extension on [Chrome Store](https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk) or the [Edge Store](https://microsoftedge.microsoft.com/addons/detail/lace/efeiemlfnahiidnjglmehaihacglceia) (tested with version 1.36.0).
-
-After installing, set up the Midnight wallet:
-
-1. Create a **new wallet** — Midnight will appear as a network option
-2. Set **Network** to **Preprod**
-3. Set **Proof server** to **Local (http://localhost:6300)** — this must point to your local proof server started via Docker
-4. Click **Enter Wallet**
-5. Fund your wallet with tNIGHT tokens from the [Preprod Faucet](https://midnight-tmnight-preprod.nethermind.dev/)
-6. Go to **Tokens** in the wallet, click **Generate tDUST**, and confirm the transaction — tDUST tokens are required to pay transaction fees on preprod
-
-## Setup Instructions
-
-### Install Project Dependencies
-
-```bash
+# Install workspace dependencies
 npm install
 ```
 
-This repository uses npm workspaces. Run installation once from the repository root.
-
-### Compile the Smart Contract
-
-The Compact compiler (`compactc 0.31.0`) generates TypeScript bindings and zero-knowledge circuits from the smart contract source code:
-
+### Compiling Contracts & Building UI
 ```bash
-cd contract
-npm run compact    # Compiles the Compact contract
-npm run build      # Copies compiled files to dist/
-cd ..
+# Compile Compact circuits
+npm run compact --workspace=@midnight-ntwrk/attendance-contract
+
+# Build contract TypeScript wrappers
+npm run build --workspace=@midnight-ntwrk/attendance-contract
+
+# Run Next.js dev server
+npm run dev --workspace=@midnight-ntwrk/attendance-ui
 ```
 
-Expected output:
-
-```
-> compact
-> compact compile src/bboard.compact ./src/managed/bboard
-
-Compiling 2 circuits:
-  circuit "post" (k=14, rows=10070)
-  circuit "takeDown" (k=14, rows=10087)
-
-> build
-> rm -rf dist && tsc --project tsconfig.build.json && cp -Rf ./src/managed ./dist/managed && cp ./src/bboard.compact ./dist
-
-```
-
-### Build the CLI Interface
-
+### Building for Production
 ```bash
-cd bboard-cli
-npm run build
-cd ..
+# Build the production Next.js dashboard bundle
+npm run build --workspace=@midnight-ntwrk/attendance-ui
+
+# Run full project type checking & validation
+npm run ci --workspace=@midnight-ntwrk/attendance-ui
 ```
 
-### Build the UI Interface (Optional)
-
-Only needed if you want to use the web interface:
-
+### Docker Deployment
 ```bash
-cd bboard-ui
-npm run build
-cd ..
+# Build and launch via Docker Compose
+docker compose up --build
 ```
 
-## Option 1: CLI Interface
+---
 
-### Start the Proof Server
+## 🛡️ Security Operations & Deployment Checklist
 
-The CLI requires a local proof server running in Docker:
-
-```bash
-cd bboard-cli
-docker compose -f proof-server-local.yml up -d
-```
-
-This uses `midnightntwrk/proof-server:8.0.3` on `http://127.0.0.1:6300`.
-
-### Run the CLI
-
-```bash
-# For preprod network
-npm run preprod-remote
-
-# For preview network
-npm run preview-remote
-```
-
-### Using the CLI
-
-#### Create a Wallet
-
-1. Choose option `1` to build a fresh wallet
-2. The system will generate a wallet address and seed
-3. **Save both the address and seed** - you'll need them later
-
-Expected output is similar to:
-
-```
-Your wallet seed is: [64-character hex string]
-Using unshielded address: mn_addr_preprod1hdvtst70zfgd8wvh7l8ppp7mcrxnjn56wc5hlxpwflz3fxdykaesrw0ln4 waiting for funds...
-```
-
-#### Fund Your Wallet
-
-Before deploying contracts, you need testnet tokens.
-
-1. Copy your wallet address from the output above
-2. Visit the [faucet](https://midnight-tmnight-preprod.nethermind.dev/)
-3. Paste your address and request funds
-4. Wait for the CLI to detect the funds (takes 2-3 minutes)
-
-Expected output after funding is similar to:
-
-```
-Your NIGHT wallet balance is: 1000000000
-```
-
-#### Deploy Your Contract
-
-1. Choose the contract deployment option
-2. Wait for deployment (takes ~30 seconds)
-3. **Save the contract address** for future use
-
-Expected output:
-
-```
-Deployed bulletin board contract at address: [contract address]
-```
-
-#### Use the Bulletin Board
-
-You can now:
-
-- **Post** a message to the bulletin board
-- **View** the current message
-- **Remove** your message (only if you posted it)
-- **Exit** when done
-
-Each action creates a real transaction on Midnight Testnet using zero-knowledge proofs generated by the proof server.
-
-## Option 2: Web UI Interface
-
-The web interface uses the same proof server and requires additional browser setup.
-
-### Start the Proof Server (if not already running)
-
-If you haven't started the proof server for the CLI, start it now:
-
-```bash
-cd bboard-cli
-docker compose -f proof-server-local.yml up -d
-cd ..
-```
-
-Verify it's running:
-
-```bash
-docker ps
-```
-
-### Start the Web Interface
-
-The UI can run against preprod or preview networks:
-
-```bash
-cd bboard-ui
-
-# For preprod network
-npm run build:start
-
-# For preview network
-npm run build:start:preview
-```
-
-The UI will be available at:
-
-- http://127.0.0.1:8080
-
-### Browser Setup
-
-1. **Open the UI URL** in a browser with Lace wallet extension installed
-2. **Set up Lace wallet** if it's your first time
-3. **Authorize the application** when Lace wallet prompts
-4. Use the bulletin board web interface
-
-## Useful Links
-
-- Get Testnet tNIGHT on [Preprod Faucet](https://midnight-tmnight-preprod.nethermind.dev/) or [Preview Faucet](https://midnight-tmnight-preview.nethermind.dev/)
-- [Midnight Documentation](https://docs.midnight.network/examples/dapps/bboard) - Complete developer guide
-- [Compatibility Matrix](https://docs.midnight.network/relnotes/support-matrix) - Current supported Midnight component versions
-- [Compact Language Guide](https://docs.midnight.network/compact/writing) - Smart contract language reference
-- Get Lace wallet on the [Chrome Store](https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk) or the [Edge Store](https://microsoftedge.microsoft.com/addons/detail/lace/efeiemlfnahiidnjglmehaihacglceia)
-
-## Troubleshooting
-
-| Common Issue                       | Solution                                                                                                  |
-| ---------------------------------- |-----------------------------------------------------------------------------------------------------------|
-| `npm install` fails                | Ensure you're using Node `v24.11.1` or newer. Older Node versions can install with warnings but are not the target runtime |
-| Contract compilation fails         | Ensure the Compact toolchain is installed and run `npm run compact` from `contract/`                      |
-| Network connection timeout         | CLI requires internet connection, restart if connection times out                                         |
-| Token funding takes too long       | Wait 1-2 minutes, funding is automatic in CLI                                                             |
-| "Application not authorized" error | Start proof server: `docker compose -f proof-server-local.yml up -d`                                      |
-| Lace wallet not detected           | Install Lace wallet browser extension and refresh page                                                    |
-| Docker issues                      | Ensure Docker Desktop is running, check `docker --version`                                                |
-| Port 6300 in use                   | Run `docker compose down` then restart services                                                           |
-| Dependencies won't install         | Use Node.js LTS version. For older npm versions, you may need `--legacy-peer-deps`                        |
-| Contract deployment fails          | Verify wallet has sufficient balance and network connection                                               |
-
-## Notes
-
-- CLI and UI can run simultaneously and share the same proof server
-- Proof server (Docker) is required for both CLI and UI to generate zero-knowledge proofs
-- Contract must be compiled before building CLI or UI
-- Fund your wallet using the testnet faucet before deploying contracts
-
-## Implementation Notes
-
-- **Transaction fee configuration**  
-  The default `additionalFeeOverhead` value (`500_000_000_000_000_000n`) from `@midnight-ntwrk/testkit-js` is required on the `undeployed` network. Lower values can fail with `BalanceCheckOverspend` on the node side. On remote networks, that overhead requires too much dust, so the CLI overrides it to `1_000n`.
-- CLI private state is stored per contract address, matching the `Midnight.js 4.x` private-state provider model.
+- **Environment Credentials:** Never expose wallet seed phrases, private keys, or secret parameters in browser local storage, public repos, or client logs.
+- **Contract Deployment:** Update `NEXT_PUBLIC_CONTRACT_ADDRESS` in `attendance-ui/.env.local` after deploying the Compact contract to Midnight Preprod / Mainnet.
+- **Audit Compliance:** Validate zero-knowledge proof circuit artifacts before every production release.

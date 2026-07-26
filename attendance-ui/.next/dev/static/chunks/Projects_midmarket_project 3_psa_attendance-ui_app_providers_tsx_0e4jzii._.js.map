@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/indrajitari/Projects/midmarket/project%203/psa/attendance-ui/app/providers.tsx"],"sourcesContent":["'use client';\nimport { QueryClient, QueryClientProvider } from '@tanstack/react-query';\nimport { useState, type ReactNode } from 'react';\nexport function Providers({ children }: { children: ReactNode }) { const [client] = useState(() => new QueryClient()); return <QueryClientProvider client={client}>{children}</QueryClientProvider>; }\n"],"names":["Providers","children","client"],"mappings":";;;;;AACA;AAAA;AACA;;;AAFA;;;AAGO,SAASA,UAAU,EAAEC,QAAQ,EAA2B;;IAAI,MAAM,CAACC,OAAO,GAAG,IAAA,uNAAQ;8BAAC,IAAM,IAAI,6OAAW;;IAAK,qBAAO,2OAAC,8PAAmB;QAACA,QAAQA;kBAASD;;;;;;AAAiC;GAArLD;KAAAA"}}]
+}
