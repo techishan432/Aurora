@@ -18,8 +18,8 @@
  * as well as the single witness function that accesses it.
  */
 
-import { Ledger } from "./managed/attendance/contract/index.js";
-import { WitnessContext } from "@midnight-ntwrk/midnight-js-protocol/compact-runtime";
+import { Ledger } from './managed/attendance/contract/index.js';
+import { WitnessContext } from '@midnight-ntwrk/midnight-js-protocol/compact-runtime';
 
 /* **********************************************************************
  * The only hidden state needed by the attendance contract is
@@ -67,8 +67,8 @@ export const createAttendancePrivateState = (secretKey: Uint8Array) => ({
 export const witnesses = {
   localSecretKey: ({
     privateState,
-  }: WitnessContext<Ledger, AttendancePrivateState>): [
-    AttendancePrivateState,
-    Uint8Array,
-  ] => [privateState, privateState.secretKey],
+  }: WitnessContext<Ledger, AttendancePrivateState>): [AttendancePrivateState, Uint8Array] => [
+    privateState,
+    privateState.secretKey,
+  ],
 };

@@ -22,11 +22,11 @@ describe('PrivateAttendance contract interface', () => {
   });
 
   it('exports public state fields', () => {
-    const contract = new Contract(witnesses) as unknown as { 
-      constructor: Function;
-      initialState: Function;
+    const contract = new Contract(witnesses) as unknown as {
+      constructor: (...args: unknown[]) => unknown;
+      initialState: (...args: unknown[]) => unknown;
     };
-    
+
     // Verify contract has the expected structure
     expect(contract.constructor).toBeDefined();
     expect(contract.initialState).toBeDefined();

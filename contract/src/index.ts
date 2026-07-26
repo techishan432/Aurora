@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CompiledContract } from "@midnight-ntwrk/midnight-js-protocol/compact-js";
+import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
-export * from "./managed/attendance/contract/index.js";
-export * from "./witnesses";
+export * from './managed/attendance/contract/index.js';
+export * from './witnesses';
 
-import * as CompiledAttendanceContract from "./managed/attendance/contract/index.js";
-import * as Witnesses from "./witnesses";
+import * as CompiledAttendanceContract from './managed/attendance/contract/index.js';
+import * as Witnesses from './witnesses';
 
 export const CompiledAttendanceContractContract = CompiledContract.make<
   CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>
->("Attendance", CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>).pipe(
+>('Attendance', CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>).pipe(
   CompiledContract.withWitnesses(Witnesses.witnesses),
-  CompiledContract.withCompiledFileAssets("./managed/attendance"),
+  CompiledContract.withCompiledFileAssets('./managed/attendance'),
 );

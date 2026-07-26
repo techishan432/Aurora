@@ -2,10 +2,7 @@ import type { Logger } from 'pino';
 import type { Config } from './config.js';
 import type { TestEnvironment } from '@midnight-ntwrk/testkit-js';
 import { deployContract } from '@midnight-ntwrk/midnight-js-contracts';
-import {
-  CompiledAttendanceContractContract,
-  createAttendancePrivateState,
-} from '@midnight-ntwrk/attendance-contract';
+import { CompiledAttendanceContractContract, createAttendancePrivateState } from '@midnight-ntwrk/attendance-contract';
 import { initializeMidnightProviders } from '@midnight-ntwrk/testkit-js';
 import { MidnightWalletProvider } from './midnight-wallet-provider.js';
 import { syncWallet } from './wallet-utils.js';
@@ -25,19 +22,17 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
 
   // Initialize providers using testkit helpers
   logger.info('Initializing contract providers...');
-  const providers = initializeMidnightProviders(
-    walletProvider.wallet as any,
-    env,
-    {
-      privateStateStoreName: config.privateStateStoreName,
-      zkConfigPath: config.zkConfigPath,
-    }
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const providers = initializeMidnightProviders(walletProvider.wallet as any, env, {
+    privateStateStoreName: config.privateStateStoreName,
+    zkConfigPath: config.zkConfigPath,
+  });
 
   logger.info('Deploying contract...');
   const secretKey = crypto.getRandomValues(new Uint8Array(32));
   const initialPrivateState = createAttendancePrivateState(secretKey);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
   const deployed = await deployContract(providers as any, {
     compiledContract: CompiledAttendanceContractContract,
     privateStateId: 'attendance',

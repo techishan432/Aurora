@@ -10,5 +10,7 @@ import type { TestEnvironment } from '@midnight-ntwrk/testkit-js';
 export const run = async (_config: Config, environment: TestEnvironment, logger: Logger): Promise<void> => {
   const env = await environment.start();
   logger.info({ network: env.networkId, node: env.node, indexer: env.indexer }, 'Attendance CLI environment ready');
-  logger.info('Deploy the attendance contract, set <YOUR_DEPLOYED_CONTRACT_ADDRESS> in attendance-ui/.env.local, then use the wallet-connected UI.');
+  logger.info(
+    'Deploy the attendance contract, set <YOUR_DEPLOYED_CONTRACT_ADDRESS> in attendance-ui/.env.local, then use the wallet-connected UI.',
+  );
 };

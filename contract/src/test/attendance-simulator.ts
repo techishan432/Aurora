@@ -20,13 +20,9 @@ import {
   convertFieldToBytes,
   createConstructorContext,
   CostModel,
-} from "@midnight-ntwrk/compact-runtime";
-import {
-  Contract,
-  type Ledger,
-  ledger,
-} from "../managed/attendance/contract/index.js";
-import { type AttendancePrivateState, witnesses } from "../witnesses.js";
+} from '@midnight-ntwrk/compact-runtime';
+import { Contract, type Ledger, ledger } from '../managed/attendance/contract/index.js';
+import { type AttendancePrivateState, witnesses } from '../witnesses.js';
 
 /**
  * Serves as a testbed to exercise the contract in tests
@@ -37,21 +33,14 @@ export class AttendanceSimulator {
 
   constructor(secretKey: Uint8Array) {
     this.contract = new Contract<AttendancePrivateState>(witnesses);
-    const {
-      currentPrivateState,
-      currentContractState,
-      currentZswapLocalState,
-    } = this.contract.initialState(
-      createConstructorContext({ secretKey }, "0".repeat(64)),
+    const { currentPrivateState, currentContractState, currentZswapLocalState } = this.contract.initialState(
+      createConstructorContext({ secretKey }, '0'.repeat(64)),
     );
     this.circuitContext = {
       currentPrivateState,
       currentZswapLocalState,
       costModel: CostModel.initialCostModel(),
-      currentQueryContext: new QueryContext(
-        currentContractState.data,
-        sampleContractAddress(),
-      ),
+      currentQueryContext: new QueryContext(currentContractState.data, sampleContractAddress()),
     };
   }
 
@@ -75,38 +64,22 @@ export class AttendanceSimulator {
   }
 
   public openSession(course: Uint8Array): Ledger {
-    this.circuitContext = this.contract.impureCircuits.openSession(
-      this.circuitContext,
-      course,
-    ).context;
+    this.circuitContext = this.contract.impureCircuits.openSession(this.circuitContext, course).context;
     return ledger(this.circuitContext.currentQueryContext.state);
   }
 
   public checkIn(evidence: Uint8Array): Ledger {
-    this.circuitContext = this.contract.impureCircuits.checkIn(
-      this.circuitContext,
-      evidence,
-    ).context;
+    this.circuitContext = this.contract.impureCircuits.checkIn(this.circuitContext, evidence).context;
     return ledger(this.circuitContext.currentQueryContext.state);
   }
 
   public closeSession(): Ledger {
-    this.circuitContext = this.contract.impureCircuits.closeSession(
-      this.circuitContext,
-    ).context;
+    this.circuitContext = this.contract.impureCircuits.closeSession(this.circuitContext).context;
     return ledger(this.circuitContext.currentQueryContext.state);
   }
 
   public publicKey(): Uint8Array {
-    const sequence = convertFieldToBytes(
-      32,
-      this.getLedger().sequence,
-      "attendance-simulator.ts",
-    );
-    return this.contract.circuits.publicKey(
-      this.circuitContext,
-      this.getPrivateState().secretKey,
-      sequence,
-    ).result;
+    const sequence = convertFieldToBytes(32, this.getLedger().sequence, 'attendance-simulator.ts');
+    return this.contract.circuits.publicKey(this.circuitContext, this.getPrivateState().secretKey, sequence).result;
   }
 }
