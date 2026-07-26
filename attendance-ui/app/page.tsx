@@ -142,17 +142,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Deployment Banner alert if unconfigured */}
-      {!config.isConfigured && (
-        <div className="aside-banner deployment-banner">
-          <span>⚠️</span>
-          <div>
-            <strong>Contract not deployed yet.</strong> Run{' '}
-            <code>npm run preprod-remote --workspace=@midnight-ntwrk/attendance-cli</code> to deploy, then set{' '}
-            <code>NEXT_PUBLIC_CONTRACT_ADDRESS</code> in <code>attendance-ui/.env.local</code>.
-          </div>
-        </div>
-      )}
+      {/* Deployment Banner alert hidden */}
 
       {walletError && (
         <div className="aside-banner" role="alert">
