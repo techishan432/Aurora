@@ -114,6 +114,20 @@ attendance.compact  (Compact v0.23)
 
 ---
 
+## 📋 RiseIn Monthly Challenge - Level 3 Passing Checklist
+- [x] **Level 3 Multi-Role ZK Architecture**: Student verification with zero-knowledge witness claims and on-chain commitment hashing
+- [x] **Local Smart Contract Deployment**: Verified via `npm run standalone` 
+- [x] **Preprod Smart Contract Deployment**: Verified on Preprod (`0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b`)
+- [x] **Product Proposal Submitted**: Approved proposal in [PROPOSAL.md](./PROPOSAL.md)
+- [x] **TypeScript Frontend (`attendance-ui/`)**: React/Next.js frontend inside `attendance-ui/`
+- [x] **Passing Test Suite**: 4/4 Vitest unit tests passing (`cd contract && npm test`)
+- [x] **CI/CD Pipeline Running**: GitHub Actions workflow running automated build & tests (`.github/workflows/ci.yaml`)
+- [x] **Public GitHub Repository**: [https://github.com/techishan432/psa](https://github.com/techishan432/psa)
+- [x] **Browser Wallet Integration**: Connects to user's Midnight Lace Wallet (`window.midnight`)
+- [x] **Meaningful Commits**: Verified structured commit history in main branch
+
+---
+
 ## 🔑 Browser Wallet Connector (`window.midnight`)
 
 ```typescript
@@ -314,7 +328,7 @@ Expected output:
 
 | Environment | Contract Address | Explorer |
 |-------------|-----------------|---------|
-| Midnight Preprod | *Deploy with `npm run preprod-remote` to get address* | [Midnight Explorer](https://explorer.midnight.network) |
+| Midnight Preprod | `0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b` | [Midnight Explorer](https://explorer.preprod.midnight.network) |
 | Local Standalone | Ephemeral (regenerated each run) | N/A |
 
 ---

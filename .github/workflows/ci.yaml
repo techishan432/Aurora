@@ -19,7 +19,6 @@ jobs:
 
       - name: Setup Compact Compiler
         uses: midnightntwrk/setup-compact-action@836895c8fffbbea6bd986af2b17e8941ff29d1f8
-        continue-on-error: true
         with:
           compact-version: '0.23.0'
         env:
@@ -46,24 +45,21 @@ jobs:
 
       - name: Compile and test contract
         working-directory: contract
-        continue-on-error: true
         run: |
-          npm run ci || true
+          npm run ci
 
       - name: api
         working-directory: api
-        continue-on-error: true
         run: |
-          npm run ci || true
+          npm run ci
 
       - name: Compile attendance-cli
         working-directory: attendance-cli
-        continue-on-error: true
         run: |
-          npm run ci || true
+          npm run ci
 
       - name: Compile attendance-ui
         working-directory: attendance-ui
-        continue-on-error: true
         run: |
-          npm run ci || true
+          npm run ci
+
