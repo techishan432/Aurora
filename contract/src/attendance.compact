@@ -47,7 +47,7 @@ witness localSecretKey(): Bytes<32>;
 // commitment produced in the client, so course identifiers never reach the
 // public ledger in plaintext.
 export circuit openSession(course: Bytes<32>): [] {
-  assert state != SessionState.OPEN "An attendance session is already open";
+  assert(state != SessionState.OPEN, "An attendance session is already open");
   registrar = disclose(publicKey(localSecretKey(), sequence as Field as Bytes<32>));
   courseCommitment = disclose(some<Bytes<32>>(course));
   studentCommitment = none<Bytes<32>>();
@@ -59,14 +59,14 @@ export circuit openSession(course: Bytes<32>): [] {
 // a salted attendance commitment are disclosed, preventing public linkage to
 // a student record.
 export circuit checkIn(evidence: Bytes<32>): [] {
-  assert state == SessionState.OPEN "No attendance session is open";
+  assert(state == SessionState.OPEN, "No attendance session is open");
   studentCommitment = disclose(some<Bytes<32>>(studentPseudonym(localSecretKey(), sequence as Field as Bytes<32>)));
   attendanceCommitment = disclose(some<Bytes<32>>(evidence));
 }
 
 export circuit closeSession(): [] {
-  assert state == SessionState.OPEN "No attendance session is open";
-  assert registrar == publicKey(localSecretKey(), sequence as Field as Bytes<32>) "Only the session registrar can close attendance";
+  assert(state == SessionState.OPEN, "No attendance session is open");
+  assert(registrar == publicKey(localSecretKey(), sequence as Field as Bytes<32>), "Only the session registrar can close attendance");
   state = SessionState.CLOSED;
   sequence.increment(1);
 }

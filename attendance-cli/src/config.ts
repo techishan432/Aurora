@@ -21,6 +21,7 @@ import {
   TestEnvironment,
 } from '@midnight-ntwrk/testkit-js';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
+import { fileURLToPath } from 'node:url';
 import { Logger } from 'pino';
 
 export interface Config {
@@ -31,7 +32,7 @@ export interface Config {
   readonly generateDust: boolean;
 }
 
-export const currentDir = path.resolve(new URL(import.meta.url).pathname, '..');
+export const currentDir = path.resolve(fileURLToPath(import.meta.url), '..');
 
 export class StandaloneConfig implements Config {
   getEnvironment(logger: Logger): TestEnvironment {

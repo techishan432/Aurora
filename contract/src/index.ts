@@ -16,10 +16,10 @@
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
 export * from './managed/attendance/contract/index.js';
-export * from './witnesses';
+export * from './witnesses.js';
 
 import * as CompiledAttendanceContract from './managed/attendance/contract/index.js';
-import * as Witnesses from './witnesses';
+import * as Witnesses from './witnesses.js';
 
 export const CompiledAttendanceContractContract = CompiledContract.make<
   CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>

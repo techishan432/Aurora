@@ -117,7 +117,7 @@ attendance.compact  (Compact v0.23)
 ## 📋 RiseIn Monthly Challenge - Level 3 Passing Checklist
 - [x] **Level 3 Multi-Role ZK Architecture**: Student verification with zero-knowledge witness claims and on-chain commitment hashing
 - [x] **Local Smart Contract Deployment**: Verified via `npm run standalone` 
-- [x] **Preprod Smart Contract Deployment**: Verified on Preprod (`0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b`)
+- [x] **Preprod Smart Contract Deployment**: Verified on Preprod (`a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de`)
 - [x] **Product Proposal Submitted**: Approved proposal in [PROPOSAL.md](./PROPOSAL.md)
 - [x] **TypeScript Frontend (`attendance-ui/`)**: React/Next.js frontend inside `attendance-ui/`
 - [x] **Passing Test Suite**: 4/4 Vitest unit tests passing (`cd contract && npm test`)

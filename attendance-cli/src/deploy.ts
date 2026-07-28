@@ -14,7 +14,8 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
   logger.info({ network: env.networkId, node: env.node, indexer: env.indexer }, 'Environment started');
 
   logger.info('Building wallet provider...');
-  const walletProvider = await MidnightWalletProvider.build(logger, env);
+  const seed = process.env.WALLET_SEED ?? (environment as any).genesisMintWalletSeed?.[0];
+  const walletProvider = await MidnightWalletProvider.build(logger, env, seed);
   await walletProvider.start();
 
   logger.info('Syncing wallet...');
@@ -22,8 +23,7 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
 
   // Initialize providers using testkit helpers
   logger.info('Initializing contract providers...');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const providers = initializeMidnightProviders(walletProvider.wallet as any, env, {
+  const providers = initializeMidnightProviders(walletProvider, env, {
     privateStateStoreName: config.privateStateStoreName,
     zkConfigPath: config.zkConfigPath,
   });
