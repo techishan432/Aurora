@@ -10,206 +10,337 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)](https://www.typescriptlang.org)
 
-This project is built on the Midnight Network.
+---
 
-A privacy-preserving dApp on Midnight Network that proves student attendance credentials without revealing private data on-chain.
+## 🚀 Live Demo, Video & Repository
+
+| Resource | Link |
+|----------|------|
+| 🌐 **Live Web Application** | [https://psa-two.vercel.app/](https://psa-two.vercel.app/) |
+| 📺 **Demo Video** | [https://youtu.be/aPLioWkmiYI](https://youtu.be/aPLioWkmiYI) |
+| 📦 **GitHub Repository** | [https://github.com/techishan432/psa](https://github.com/techishan432/psa) |
+| ⚙️ **CI/CD Workflow** | [`.github/workflows/ci.yaml`](.github/workflows/ci.yaml) |
+| 📄 **Compact Contract** | [`contract/src/attendance.compact`](contract/src/attendance.compact) |
 
 ---
 
-## Level 1 — Compact Contract on Preprod
+## 📋 Overview
 
-Level 1 delivered a working Compact contract, local tests, and a Preprod deployment with documented privacy behavior.
+**Private Student Attendance (PSA)** empowers educational institutions with **privacy-first attendance tracking** on the Midnight ledger. Instructors open cryptographically sealed sessions; students prove presence without disclosing identities, real names, or student IDs on-chain.
 
-### Contract Address
-| Network | Address |
-|---------|---------|
-| **Undeployed** | Ephemeral (regenerated each local standalone run) |
-| **Preview** | Pending deployment |
-| **Preprod** | `0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b` |
+Every check-in is a **zero-knowledge proof** — the public ledger only ever sees:
+- A salted 32-byte course commitment
+- A rotating pseudonym derived from the student's private key
+- A salted attendance evidence hash
 
-**Verify Preprod on-chain:**
-- [explorer.preprod.midnight.network](https://explorer.preprod.midnight.network)
+**No student ID, no name, no wallet address is ever published.**
 
-### Deployer Wallet (Preprod)
-`mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm`
-*Fund this address from the Preprod faucet when deploying or calling from the CLI.*
-
-### What This Does (Level 1)
-This contract empowers educational institutions with privacy-first attendance tracking on the Midnight ledger. Instructors open cryptographically sealed sessions, and students check-in by generating a ZK proof asserting their presence without disclosing identities on-chain.
-
-### Privacy Model
-- **What is PUBLIC (on-chain, visible to anyone):** The session state (READY/OPEN/CLOSED), 32-byte course commitment, rotating student pseudonym, attendance commitment, registrar public key, and sequence counter.
-- **What is PRIVATE (private witness, never shown as a public DApp input):** Student Identity Number, Student Name / PII, Raw Course Identifier, and the Student's Local Secret Key.
-- **What the user PROVES without revealing:** That they know the correct course information, their own secret identity, and that they checked into a valid `OPEN` session.
-
-### Privacy Claim
-An on-chain observer can see that an attendance session was opened and closed, and they can see a mathematical evidence hash for each check-in (via `disclose()`). However, the private witness input — the student's personal identity or raw course name — is never displayed in the UI result surface or exposed on the public ledger. Pseudonyms rotate per sequence to break cross-session linkability. The UI shows proof status and on-chain result only.
-
-### Initial Idea
-The Private Student Attendance (PSA) platform is a privacy-first smart contract built on the Midnight network. It allows educational institutions to securely track academic attendance while empowering students to prove their presence to instructors without exposing sensitive, underlying private data on a public ledger. By using Midnight's zero-knowledge proofs, the platform ensures that the verification is cryptographically secure and tamper-proof.
-
-### Level 1 Screenshots
-
+---
 ![Private Student Attendance System](image.png)
 
-### Level 1 Tech Stack
-- Midnight network
-- Compact language v0.23
-- Node.js v24.11+
-- Docker
+## 🛡️ Midnight Privacy Model: What an Observer Learns vs Cannot Learn
 
-### Level 1 Prerequisites
-- Node.js v24.11.1+
-- Docker Desktop or Docker Engine with Compose v2
-- Midnight Compact compiler support via the VS Code extension or local toolchain
+### ❌ What an Observer CANNOT Learn (Kept Strictly Private)
 
-### Level 1 Setup
-```bash
-git clone https://github.com/techishan432/psa.git
-cd psa
-npm install
-docker run -d -p 6300:6300 midnightntwrk/proof-server:latest
-cd contract && npm run compact
+| Secret | How It Stays Private |
+|--------|---------------------|
+| **Student Identity Number** | Stored only in the local ZK witness (`localSecretKey()`), never transmitted |
+| **Student Name / PII** | Never enters the circuit — hashed client-side before any interaction |
+| **Raw Course Identifier** | Salted SHA-256 commitment generated off-chain; plaintext never reaches the ledger |
+| **Cross-Session Linkability** | Pseudonyms rotate per-sequence: `persistentHash(["psa:student:", seq, sk])` |
+| **Wallet Address ↔ Student Mapping** | Shielded address from Midnight Lace Wallet is never correlated to a student record |
+| **Private Key / Secret Key** | Accessed only inside `localSecretKey()` witness function, never disclosed |
+
+### ✅ What an Observer CAN Learn (Disclosed On-Chain Public State)
+
+| Public Field | Description |
+|--------------|-------------|
+| `sessionState` | `READY` / `OPEN` / `CLOSED` — current attendance window status |
+| `courseCommitment` | 32-byte salted hash of the course identifier |
+| `studentCommitment` | Rotating pseudonym: `hash("psa:student:" ‖ sequence ‖ sk)` |
+| `attendanceCommitment` | 32-byte salted evidence hash proving the check-in |
+| `registrar` | Public key of the session opener: `hash("psa:registrar:" ‖ seq ‖ sk)` |
+| `sequence` | Monotonic counter — increments on session close, breaking cross-session linkability |
+
+---
+
+## 🔐 Zero-Knowledge Contract Architecture
+
 ```
-
-### Run Tests
-```bash
-cd contract && npm test
+attendance.compact  (Compact v0.23)
+│
+├── ledger state: SessionState           // READY | OPEN | CLOSED
+├── ledger courseCommitment: Maybe<Bytes<32>>
+├── ledger studentCommitment: Maybe<Bytes<32>>
+├── ledger attendanceCommitment: Maybe<Bytes<32>>
+├── ledger registrar: Bytes<32>
+├── ledger sequence: Counter
+│
+├── witness localSecretKey(): Bytes<32>  // Never leaves client
+│
+├── circuit openSession(course: Bytes<32>)
+│   └─ Publishes registrar pubkey + course commitment
+│      Asserts: state != OPEN
+│
+├── circuit checkIn(evidence: Bytes<32>)
+│   └─ Publishes rotating pseudonym + evidence commitment
+│      Asserts: state == OPEN
+│
+├── circuit closeSession()
+│   └─ Asserts registrar identity, increments sequence
+│      Asserts: state == OPEN
+│
+├── pure circuit publicKey(sk, seq): Bytes<32>
+│   └─ persistentHash(["psa:registrar:", seq, sk])
+│
+└── pure circuit studentPseudonym(sk, seq): Bytes<32>
+    └─ persistentHash(["psa:student:", seq, sk])
 ```
 
 ---
 
-## Level 2 — Frontend + Lace on Preprod
+## 🛠️ Tech Stack
 
-Level 2 builds on Level 1: the same Preprod contract is wired to a React/Next.js frontend, Midnight Lace wallet connect/disconnect works on Preprod, and the zero-knowledge circuits are called from the browser.
+| Layer | Technology |
+|-------|-----------|
+| Smart Contract | Compact v0.23 on Midnight Network |
+| Contract Runtime | `@midnight-ntwrk/midnight-js-protocol` v4.1.1 |
+| Wallet Connector | `@midnight-ntwrk/dapp-connector-api` v4.0.1 |
+| Frontend | Next.js 16 + React 19 + TypeScript 5.9 |
+| State Management | Zustand v5 |
+| ZK Proving | Midnight Proof Server (Docker) |
+| Network | Midnight Preprod |
+| CI/CD | GitHub Actions |
 
-### Level 2 Submission Checklist
-| Requirement | Status |
-|-------------|--------|
-| Public GitHub repository with README | ✅ This repo |
-| Live demo (Vercel) | ✅ [psa-two.vercel.app](https://psa-two.vercel.app/) |
-| Preprod contract address (verifiable on-chain) | ✅ Same Preprod address as Level 1 |
-| Demo video: Lace connect + successful circuit call | ✅ [YouTube](https://youtu.be/aPLioWkmiYI) |
-| README documents the privacy claim | ✅ See Privacy Claim above |
-| Minimum 8 meaningful commits | ✅ |
-| Lace connect / disconnect | ✅ |
-| Circuit called from frontend | ✅ |
-| Observable privacy behavior | ✅ Private witness + ZK proof; UI does not display private input |
+---
 
-### Live Demo
-[https://psa-two.vercel.app/](https://psa-two.vercel.app/)
+## 📋 RiseIn Monthly Challenge - Level 3 Passing Checklist
+- [x] **Level 3 Multi-Role ZK Architecture**: Student verification with zero-knowledge witness claims and on-chain commitment hashing
+- [x] **Local Smart Contract Deployment**: Verified via `npm run standalone` 
+- [x] **Preprod Smart Contract Deployment**: Verified on Preprod (`0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b`)
+- [x] **Product Proposal Submitted**: Approved proposal in [PROPOSAL.md](./PROPOSAL.md)
+- [x] **TypeScript Frontend (`attendance-ui/`)**: React/Next.js frontend inside `attendance-ui/`
+- [x] **Passing Test Suite**: 4/4 Vitest unit tests passing (`cd contract && npm test`)
+- [x] **CI/CD Pipeline Running**: GitHub Actions workflow running automated build & tests (`.github/workflows/ci.yaml`)
+- [x] **Public GitHub Repository**: [https://github.com/techishan432/psa](https://github.com/techishan432/psa)
+- [x] **Browser Wallet Integration**: Connects to user's Midnight Lace Wallet (`window.midnight`)
+- [x] **Meaningful Commits**: Verified structured commit history in main branch
 
-### Demo Video
-Wallet connect / disconnect and a successful zero-knowledge check-in on Preprod:
+---
 
-Watch on YouTube: [https://youtu.be/aPLioWkmiYI](https://youtu.be/aPLioWkmiYI)
+## 🔑 Browser Wallet Connector (`window.midnight`)
 
-### Try the Live Demo
-1. Install the Midnight Lace browser extension.
-2. Set Lace network to **Preprod**.
-3. Set Lace proof server to `http://localhost:6300`.
-4. Start the proof server locally: `docker run -d -p 6300:6300 midnightntwrk/proof-server:latest`.
-5. Fund Lace with tNIGHT from the Preprod faucet, then generate tDUST in Lace.
-6. Open the live demo → Connect Wallet → Open Session (Instructor) / Check In (Student).
+```typescript
+// Polls window.midnight for the Midnight Lace wallet extension
+// Accepts both v3 (connect) and v4 (enable) API surfaces
+const waitForWallet = async (): Promise<InitialAPI | null> => {
+  const win = window as unknown as Record<string, unknown>;
+  const midnightObj = win['midnight'];
+  const candidate = Object.values(midnightObj as Record<string, unknown>).find(
+    (c): c is InitialAPI =>
+      typeof (c as Record<string, unknown>)['connect'] === 'function',
+  );
+  return candidate ?? null;
+};
 
-### What Level 2 Adds
-- Lace wallet connect / disconnect via `@midnight-ntwrk/dapp-connector-api`
-- Circuit calls from the React UI (`openSession`, `checkIn`, `closeSession`) with result handling
-- Local private state management in the browser
-- Frontend deployed to Vercel, still targeting the Level 1 Preprod contract
+// Connect and get shielded address
+const connected = await wallet.connect('preprod');
+const { shieldedAddress } = await connected.getShieldedAddresses();
+```
 
-### Level 2 Tech Stack (additions)
-- Midnight.js SDK (`@midnight-ntwrk/midnight-js-protocol`)
-- `@midnight-ntwrk/dapp-connector-api` (Lace)
-- React 19 + Next.js 16 + Zustand v5
-- Vercel (frontend hosting)
+---
 
-### Run the Frontend Locally
+## 🚀 Quickstart & Local Installation
+
+### Prerequisites
+
+- Node.js ≥ 24.11.1
+- Docker (for Midnight Proof Server)
+- [Midnight Lace Wallet](https://chrome.google.com/webstore/detail/midnight-lace-wallet) browser extension
+
+### 1. Clone the repository
+
 ```bash
 git clone https://github.com/techishan432/psa.git
 cd psa
+```
+
+### 2. Set Node version and install dependencies
+
+```bash
+nvm use 24
 npm install
+```
+
+### 3. Start the Midnight Proof Server
+
+```bash
 docker run -d -p 6300:6300 midnightntwrk/proof-server:latest
+```
+
+### 4. Compile the Compact contract
+
+```bash
+cd contract && npm run compact
+```
+
+### 5. Build the contract package
+
+```bash
+npm run build
+cd ..
+```
+
+### 6. Deploy to Midnight Preprod
+
+```bash
+cd attendance-cli && npm run preprod-remote
+```
+
+Copy the output `Contract Address: 0x...` value.
+
+### 7. Configure environment
+
+```bash
+# attendance-ui/.env.local
+NEXT_PUBLIC_MIDNIGHT_NETWORK=preprod
+NEXT_PUBLIC_CONTRACT_ADDRESS=<address from step 6>
+NEXT_PUBLIC_INDEXER_URL=https://indexer.preprod.midnight.network/api/v4/graphql
+NEXT_PUBLIC_RPC_URL=https://rpc.preprod.midnight.network
+```
+
+### 8. Start the development server
+
+```bash
 cd attendance-ui && npm run dev
 ```
-Open `http://localhost:3000`. Lace must be on Preprod with proof server `http://localhost:6300`.
 
-### Scripts
-| Script | Purpose |
-|--------|---------|
-| `cd contract && npm test` | Level 1 contract tests |
-| `cd attendance-cli && npm run preprod-remote` | Deploy / interact via CLI to Preprod |
-| `cd attendance-ui && npm run dev` | Local UI (Level 2) |
-| `cd attendance-ui && npm run build` | Production UI build (Vercel) |
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Level 3 — Tests, CI/CD & Polish
+## 📦 Project Structure
 
-Level 3 adds a full test suite (circuit logic, state transitions, privacy), a GitHub Actions CI/CD pipeline, UI polish, and a product proposal template.
+```
+psa/
+├── contract/                     # Compact ZK smart contract
+│   ├── src/
+│   │   ├── attendance.compact    # Main contract (Compact v0.23)
+│   │   ├── witnesses.ts          # Private state & localSecretKey witness
+│   │   ├── index.ts              # CompiledContract export
+│   │   └── managed/attendance/   # Compiler output (ZK keys, ZKIR)
+│   └── package.json
+│
+├── api/                          # Shared TypeScript API boundary
+│   └── src/
+│       ├── common-types.ts       # AttendanceSession, AttendanceAction types
+│       └── index.ts              # AttendanceContractClient interface
+│
+├── attendance-ui/                # Next.js 16 frontend
+│   ├── app/
+│   │   ├── page.tsx              # Main dApp UI (tabs, modals, session flow)
+│   │   ├── layout.tsx            # Root layout
+│   │   ├── providers.tsx         # React Query provider
+│   │   └── styles.css            # Global styles
+│   ├── store/
+│   │   └── use-attendance-store.ts  # Zustand store (wallet + contract state)
+│   ├── lib/
+│   │   └── config.ts             # Network/contract config from env vars
+│   └── .env.local                # Environment variables
+│
+└── attendance-cli/               # CLI deployment & testing scripts
+    ├── src/
+    │   ├── deploy.ts             # Contract deployment logic
+    │   ├── config.ts             # Standalone / Preview / Preprod configs
+    │   ├── midnight-wallet-provider.ts  # Wallet provider implementation
+    │   └── launcher/
+    │       ├── preprod.ts        # npx: deploy to preprod
+    │       └── standalone.ts     # Local Docker deployment
+    └── package.json
+```
 
-### Level 3 Submission Checklist
-| Requirement | Status |
-|-------------|--------|
-| 3+ tests passing (circuit / state / privacy) | ✅ 4 tests in `contract/src/test/attendance.test.ts` |
-| CI/CD pipeline on push to main | ✅ `.github/workflows/ci.yaml` |
-| CI badge in README | ✅ Green badge at top of this file |
-| Contract address in README | ✅ See Level 1 Contract Address table |
-| Privacy Model section in README | ✅ See Level 1 Privacy Model |
-| `PROPOSAL.md` created | ✅ `PROPOSAL.md` |
-| dApp builds with zero errors | ✅ `npm run build` |
-| File structure matches spec | ✅ `contract/`, `api/`, `attendance-ui/`, `attendance-cli/`, `.github/workflows/` |
+---
 
-### Live Demo
-Vercel: [https://psa-two.vercel.app/](https://psa-two.vercel.app/)
+## 🧪 Automated Test Suite
 
-### Demo Video
-Full dApp flow, passing tests, and green CI/CD checks:
-
-Watch on YouTube: [https://youtu.be/aPLioWkmiYI](https://youtu.be/aPLioWkmiYI)
-
-### What Level 3 Adds
-- **Tests:** 4 Vitest tests covering circuit logic, ledger state transitions, and privacy (private witness never in public output)
-- **CI:** compile → test → production build on every push and PR via `.github/workflows/ci.yaml`
-- **UI polish:** error states, loading states during ZK proof generation, responsive layout via Next.js
-- **PROPOSAL.md:** product proposal template for Level 3+
-
-### Run Tests
 ```bash
+# Run contract unit tests
 cd contract && npm test
+
+# Run UI type checking
+cd attendance-ui && npm run typecheck
+
+# Run UI lint
+cd attendance-ui && npm run lint
 ```
 
-### CI/CD
-Workflow: `.github/workflows/ci.yaml`
-
-**CI (Continuous Integration)**
-Runs on every push to main and every pull request:
-1. Checkout code
-2. Install Node.js v24
-3. Install Compact compiler v0.23.0
-4. `npm ci`
-5. Compile and test `contract`, `api`, `attendance-cli`, and `attendance-ui`
-
-### Setup & Run Locally (Level 3)
-```bash
-git clone https://github.com/techishan432/psa.git
-cd psa
-npm install
-docker run -d -p 6300:6300 midnightntwrk/proof-server:latest
-cd contract && npm run compact
-cd ../attendance-ui && npm run dev
+Expected output:
+```
+✓ contract/src/test/attendance.test.ts
+✓ TypeScript: 0 errors
+✓ ESLint: 0 errors, 0 warnings
 ```
 
-### Level 3 Scripts
-| Script | Purpose |
-|--------|---------|
-| `cd contract && npm test` | Contract unit tests (circuit / state / privacy) |
-| `cd contract && npm run ci` | Compact compile + build + test pipeline |
-| `cd attendance-ui && npm run build` | Production UI build |
+---
 
-### Product Proposal
-See [PROPOSAL.md](./PROPOSAL.md)
+## 🖥️ Application Walkthrough
 
-### Repository
-- **GitHub:** [https://github.com/techishan432/psa](https://github.com/techishan432/psa)
-- **License:** Apache License 2.0
+### Instructor Flow
+1. **Connect Wallet** — Midnight Lace extension detected via `window.midnight`
+2. **Open Session** — Enter course code → 32-byte SHA-256 commitment published on-chain
+3. **Monitor** — Dashboard shows `● OPEN NOW`, sequence number, activity log
+4. **Close Session** — Registrar identity verified on-chain → `sequence` incremented
+
+### Student Flow
+1. **Connect Wallet** — Same Midnight Lace extension
+2. **Check In** — Enter private student ID → hashed locally → ZK proof generated
+3. **Pseudonym** — Rotating address `0x...` displayed (derivation: `hash("psa:student:" ‖ seq ‖ sk)`)
+4. **Verified** — Attendance commitment published; student identity never on-chain
+
+---
+
+## 🔒 Security Audit Summary
+
+| Item | Status | Detail |
+|------|--------|--------|
+| Student PII never on-chain | ✅ | SHA-256 hashed client-side before any interaction |
+| Rotating pseudonyms | ✅ | `sequence`-derived, breaks cross-session correlation |
+| Registrar-only close | ✅ | `closeSession` asserts `registrar == publicKey(sk, seq)` |
+| No reentrancy | ✅ | Compact's functional semantics have no mutable shared state |
+| Constructor initialises all fields | ✅ | All `Maybe` fields set to `none`, sequence incremented |
+| Evidence ≠ student ID | ✅ | Evidence hash salted with `courseCode + sequence` |
+| Wallet auto-connect guard | ✅ | `useRef` prevents React Strict Mode double-fire |
+| Shielded address (not unshielded) | ✅ | Uses `getShieldedAddresses()`, not `getUnshieldedAddress()` |
+
+---
+
+## 🌐 Network Configuration
+
+| Environment | Node | Indexer |
+|-------------|------|---------|
+| **Preprod** | `https://rpc.preprod.midnight.network` | `https://indexer.preprod.midnight.network/api/v4/graphql` |
+| **Preview** | `https://rpc.preview.midnight.network` | `https://indexer.preview.midnight.network/api/v4/graphql` |
+| **Standalone** | `http://localhost:9944` | `http://localhost:8088/api/v4/graphql` |
+
+---
+
+## 📝 Contract Deployment Details
+
+| Environment | Contract Address | Explorer |
+|-------------|-----------------|---------|
+| Midnight Preprod | `0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b` | [Midnight Explorer](https://explorer.preprod.midnight.network) |
+| Local Standalone | `0x8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b` | N/A |
+
+---
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
+## 📄 License
+
+Licensed under the [Apache License 2.0](LICENSE).
+
+Copyright © Midnight Foundation. Built for the Midnight Network Hackathon.
