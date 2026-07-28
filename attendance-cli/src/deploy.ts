@@ -14,7 +14,9 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
   logger.info({ network: env.networkId, node: env.node, indexer: env.indexer }, 'Environment started');
 
   logger.info('Building wallet provider...');
-  const seed = process.env.WALLET_SEED ?? (environment as any).genesisMintWalletSeed?.[0];
+  const seed =
+    process.env.WALLET_SEED ??
+    (environment as unknown as { genesisMintWalletSeed?: string[] }).genesisMintWalletSeed?.[0];
   const walletProvider = await MidnightWalletProvider.build(logger, env, seed);
   await walletProvider.start();
 
