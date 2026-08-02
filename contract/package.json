@@ -26,7 +26,7 @@
     "@eslint/js": "^9.39.4",
     "@midnight-ntwrk/attendance-api": "*",
     "@typescript-eslint/eslint-plugin": "^8.61.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
     "globals": "^17.6.0",
