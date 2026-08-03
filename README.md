@@ -144,7 +144,7 @@ const waitForWallet = async (): Promise<InitialAPI | null> => {
 };
 
 // Connect and get shielded address
-const connected = await wallet.connect('preprod');
+const connected = await wallet.connect('preview');
 const { shieldedAddress } = await connected.getShieldedAddresses();
 ```
 
@@ -191,10 +191,10 @@ npm run build
 cd ..
 ```
 
-### 6. Deploy to Midnight Preprod
+### 6. Deploy to Midnight Preview
 
 ```bash
-cd attendance-cli && npm run preprod-remote
+cd attendance-cli && npm run preview-remote
 ```
 
 Copy the output `Contract Address: 0x...` value.
@@ -203,10 +203,10 @@ Copy the output `Contract Address: 0x...` value.
 
 ```bash
 # attendance-ui/.env.local
-NEXT_PUBLIC_MIDNIGHT_NETWORK=preprod
+NEXT_PUBLIC_MIDNIGHT_NETWORK=preview
 NEXT_PUBLIC_CONTRACT_ADDRESS=<address from step 6>
-NEXT_PUBLIC_INDEXER_URL=https://indexer.preprod.midnight.network/api/v4/graphql
-NEXT_PUBLIC_RPC_URL=https://rpc.preprod.midnight.network
+NEXT_PUBLIC_INDEXER_URL=https://indexer.preview.midnight.network/api/v4/graphql
+NEXT_PUBLIC_RPC_URL=https://rpc.preview.midnight.network
 ```
 
 ### 8. Start the development server

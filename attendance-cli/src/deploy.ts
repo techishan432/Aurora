@@ -8,7 +8,7 @@ import { MidnightWalletProvider } from './midnight-wallet-provider.js';
 import { syncWallet } from './wallet-utils.js';
 
 export const run = async (config: Config, environment: TestEnvironment, logger: Logger): Promise<void> => {
-  logger.info('=== Attendance Contract Deployment to Preprod ===');
+  logger.info('=== Attendance Contract Deployment to Preview ===');
 
   const env = await environment.start();
   logger.info({ network: env.networkId, node: env.node, indexer: env.indexer }, 'Environment started');
