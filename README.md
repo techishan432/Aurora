@@ -328,6 +328,7 @@ Expected output:
 
 | Environment | Contract Address | Explorer |
 |-------------|-----------------|---------|
+| Midnight Preview | `be94464983b577a48fbcab67bb551eeb9739f9d2ca72fa049d2fc052b09daab0` | N/A |
 | Midnight Preprod | `a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de` | [Midnight Explorer](https://preprod.midnightexplorer.com) |
 | Local Standalone | `ccd52b280bd783ad5559d0d58c1c366da2a21c73c6e6d46f3b14f2f503c3d46b` | N/A |
 
