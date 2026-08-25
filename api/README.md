@@ -1,6 +1,7 @@
 # @midnight-ntwrk/attendance-api
 
-Midnight network connector interface for the Private Student Attendance (PSA) smart contract.
+Midnight network connector interface for the **Aurora** attendance smart contract (formerly Private Student
+Attendance / PSA).
 
 ## Overview
 

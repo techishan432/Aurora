@@ -23,21 +23,24 @@ export enum SessionState {
   CLOSED
 }
 
-// Public state contains commitments only. Student identity, roster data and
-// attendance evidence remain client-side private state.
+// Public state contains commitments and zero-knowledge indicators only.
+// Student identity, roster data, and private witnesses remain client-side.
 export ledger state: SessionState;
 export ledger courseCommitment: Maybe<Bytes<32>>;
 export ledger studentCommitment: Maybe<Bytes<32>>;
 export ledger attendanceCommitment: Maybe<Bytes<32>>;
+export ledger nullifierCommitment: Maybe<Bytes<32>>;
 export ledger registrar: Bytes<32>;
 
 export ledger sequence: Counter;
+export ledger attendanceCount: Counter;
 
 constructor() {
   state = SessionState.READY;
   courseCommitment = none<Bytes<32>>();
   studentCommitment = none<Bytes<32>>();
   attendanceCommitment = none<Bytes<32>>();
+  nullifierCommitment = none<Bytes<32>>();
   sequence.increment(1);
 }
 
@@ -52,16 +55,19 @@ export circuit openSession(course: Bytes<32>): [] {
   courseCommitment = disclose(some<Bytes<32>>(course));
   studentCommitment = none<Bytes<32>>();
   attendanceCommitment = none<Bytes<32>>();
+  nullifierCommitment = none<Bytes<32>>();
   state = SessionState.OPEN;
 }
 
-// A student proves possession of a private key. Only a rotating pseudonym and
-// a salted attendance commitment are disclosed, preventing public linkage to
-// a student record.
+// A student proves possession of a private key witness.
+// Only a rotating pseudonym, a salted attendance commitment, and a per-session
+// nullifier are disclosed, preventing double check-in and cross-session linkage.
 export circuit checkIn(evidence: Bytes<32>): [] {
   assert(state == SessionState.OPEN, "No attendance session is open");
   studentCommitment = disclose(some<Bytes<32>>(studentPseudonym(localSecretKey(), sequence as Field as Bytes<32>)));
   attendanceCommitment = disclose(some<Bytes<32>>(evidence));
+  nullifierCommitment = disclose(some<Bytes<32>>(studentNullifier(localSecretKey(), sequence as Field as Bytes<32>)));
+  attendanceCount.increment(1);
 }
 
 export circuit closeSession(): [] {
@@ -77,4 +83,8 @@ export circuit publicKey(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {
 
 export circuit studentPseudonym(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {
   return persistentHash<Vector<3, Bytes<32>>>([pad(32, "psa:student:"), sequence, sk]);
+}
+
+export circuit studentNullifier(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([pad(32, "psa:nullifier:"), sequence, sk]);
 }

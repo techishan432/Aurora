@@ -1,6 +1,7 @@
 # @midnight-ntwrk/attendance-contract
 
-Compact smart contract for Private Student Attendance (PSA) on the Midnight Network.
+Compact smart contract for **Aurora** — zero-knowledge student attendance on the Midnight Network. The project was
+formerly known as Private Student Attendance (PSA).
 
 ## Contract Design
 

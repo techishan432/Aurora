@@ -1,6 +1,7 @@
 # @midnight-ntwrk/attendance-cli
 
-Command-line tool for interacting with the Private Student Attendance (PSA) contract on the Midnight Network.
+Command-line tool for deploying and interacting with the **Aurora** attendance contract on the Midnight Network
+(formerly Private Student Attendance / PSA).
 
 ## Entry Points
 

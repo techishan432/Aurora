@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-surface: #0b1326;
+  --color-surface-dim: #0b1326;
+  --color-surface-bright: #31394d;
+  --color-surface-lowest: #060e20;
+  --color-surface-low: #131b2e;
+  --color-surface-container: #171f33;
+  --color-surface-high: #222a3d;
+  --color-surface-highest: #2d3449;
+  --color-on-surface: #dae2fd;
+  --color-on-surface-variant: #c4c7c8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0b1326;
+  color: #dae2fd;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Atmospheric Ambient Background */
+.aurora-bg {
+  background-color: #0b1326;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(30, 58, 138, 0.45) 0px, transparent 55%),
+    radial-gradient(at 85% 20%, rgba(126, 34, 206, 0.4) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(219, 39, 119, 0.25) 0px, transparent 60%),
+    radial-gradient(at 90% 85%, rgba(0, 229, 255, 0.2) 0px, transparent 50%),
+    radial-gradient(at 10% 80%, rgba(16, 185, 129, 0.15) 0px, transparent 45%);
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Styles based on DESIGN.md */
+.glass-panel {
+  background: rgba(23, 31, 51, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-elevated {
+  background: rgba(34, 42, 61, 0.75);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-interactive {
+  background: rgba(23, 31, 51, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+  background: rgba(34, 42, 61, 0.75);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+}
+
+.glass-input {
+  background: rgba(11, 19, 38, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  background: rgba(11, 19, 38, 0.85);
+}
+
+/* Shimmer & Glow Animations */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 6s infinite ease-in-out;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 5s infinite ease-in-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b1326;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3449;
+  border-radius: 9999px;
+  border: 2px solid #0b1326;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444748;
+}

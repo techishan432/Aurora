@@ -54,9 +54,10 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
     const deployed = await deployContract(providers as any, {
       compiledContract: CompiledAttendanceContractContract,
-      privateStateId: 'attendance',
+      privateStateKeyName: 'attendancePrivateState',
       initialPrivateState,
-    });
+      args: [],
+    } as any);
 
     const contractAddress = deployed.deployTxData.public.contractAddress;
     logger.info('✓ Contract deployed successfully!');
