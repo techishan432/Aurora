@@ -480,6 +480,24 @@ export function DashboardTab({
               <p className="step-copy">Registrar public key</p>
             </div>
           </div>
+
+          <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <a
+              href="https://midnightexplorer.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary"
+              style={{
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '12px',
+              }}
+            >
+              Verify On-Chain on Midnight Explorer ↗
+            </a>
+          </div>
         </GlassCard>
       </section>
 

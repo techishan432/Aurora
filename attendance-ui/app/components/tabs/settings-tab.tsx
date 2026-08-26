@@ -61,6 +61,18 @@ export function SettingsTab() {
                 <span className="list-row-title">Compact v0.23</span>
               </div>
             </div>
+
+            <div style={{ marginTop: '0.5rem' }}>
+              <a
+                href="https://midnightexplorer.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                Inspect on Midnight Explorer ↗
+              </a>
+            </div>
           </div>
           {!config.isConfigured && (
             <p className="field-hint meter-hint">

@@ -1,6 +1,8 @@
 # Aurora — Zero-Knowledge Student Attendance on Midnight
 
-> **Privacy-Preserving, FERPA & GDPR-Compliant Student Attendance Platform Built on the Midnight Network using Compact Smart Contracts.**
+> **A Privacy-Preserving, FERPA & GDPR-Compliant Student Attendance Protocol Built on the Midnight Network using Compact Smart Contracts.**
+
+<div align="center">
 
 [![CI/CD Pipeline](https://github.com/techishan432/psa/actions/workflows/ci.yaml/badge.svg)](https://github.com/techishan432/psa/actions)
 [![Midnight Preprod](https://img.shields.io/badge/Midnight-Preprod-7c3aed?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=)](https://midnight.network)
@@ -9,22 +11,34 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)](https://www.typescriptlang.org)
 
+[**Live Web Application**](https://psa-two.vercel.app/) • [**Midnight Explorer**](https://midnightexplorer.com/) • [**Video Demonstration**](https://youtu.be/aPLioWkmiYI) • [**GitHub Repository**](https://github.com/techishan432/psa)
+
+</div>
+
 ---
 
 ## 🌐 Verified Midnight Deployment & Live Links
 
-| Resource | Value / Hyperlink |
+| Resource | Value / Direct Hyperlink |
 | :--- | :--- |
-| 📜 **Deployed Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` |
-| 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` |
+| 📜 **Deployed Smart Contract Address** | [**`861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599`**](https://midnightexplorer.com/) |
+| 🔗 **On-Chain Deployment Tx ID** | [**`006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d`**](https://midnightexplorer.com/) |
 | 👛 **Deployer Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` |
-| 🔍 **Midnight Block Explorer** | [https://midnightexplorer.com/](https://midnightexplorer.com/) |
-| ⚡ **Midnight Indexer GraphQL Endpoint** | [`https://indexer.preprod.midnight.network/api/v4/graphql`](https://indexer.preprod.midnight.network/api/v4/graphql) |
-| 🌐 **Live Web Application** | [https://psa-two.vercel.app/](https://psa-two.vercel.app/) |
-| 📺 **Demonstration Video** | [https://youtu.be/aPLioWkmiYI](https://youtu.be/aPLioWkmiYI) |
-| 📦 **GitHub Repository** | [https://github.com/techishan432/psa](https://github.com/techishan432/psa) |
-| ⚙️ **CI/CD Build Workflow** | [`.github/workflows/ci.yaml`](.github/workflows/ci.yaml) |
-| 📄 **Compact v0.23 Smart Contract** | [`contract/src/attendance.compact`](contract/src/attendance.compact) |
+| 🔍 **Midnight Block Explorer** | [**https://midnightexplorer.com/**](https://midnightexplorer.com/) |
+| ⚡ **Midnight Indexer GraphQL API** | [**`https://indexer.preprod.midnight.network/api/v4/graphql`**](https://indexer.preprod.midnight.network/api/v4/graphql) |
+| 🌐 **Live Web Application** | [**https://psa-two.vercel.app/**](https://psa-two.vercel.app/) |
+| 📺 **Demonstration Video** | [**https://youtu.be/aPLioWkmiYI**](https://youtu.be/aPLioWkmiYI) |
+| 📦 **GitHub Repository** | [**https://github.com/techishan432/psa**](https://github.com/techishan432/psa) |
+| ⚙️ **CI/CD Build Workflow** | [**`.github/workflows/ci.yaml`**](.github/workflows/ci.yaml) |
+| 📄 **Compact v0.23 Smart Contract** | [**`contract/src/attendance.compact`**](contract/src/attendance.compact) |
+
+---
+
+## 🔗 Live On-Chain Contract on Midnight Explorer
+
+The deployed Compact smart contract is active on the Midnight Network:
+- **Contract Address Link**: [**Inspect `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Midnight Explorer ↗**](https://midnightexplorer.com/)
+- **Deployment Transaction**: [**Inspect Tx `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Midnight Explorer ↗**](https://midnightexplorer.com/)
 
 ---
 
@@ -34,7 +48,7 @@
 Unlike standard EVM blockchains where contracts hold public bytecode, **Midnight is a zero-knowledge, data-protection blockchain**:
 1. **Zero-Knowledge Execution**: Smart contracts are compiled with **Compact v0.23** into zero-knowledge intermediate representation (ZKIR) circuits.
 2. **Shielded State & Commitments**: The ledger tracks 32-byte cryptographically salted commitments rather than raw plaintext state.
-3. **Indexer-Driven Discovery**: State queries on Midnight are resolved via the **Midnight Indexer GraphQL API** and validated by validator nodes. Community block explorers (e.g. `midnightexplorer.com`) primarily index unshielded blocks and UTXO token transfers, while smart contract execution is verified directly through the Midnight Indexer.
+3. **Indexer-Driven Discovery**: State queries on Midnight are resolved via the **Midnight Indexer GraphQL API** and validated by validator nodes. Community block explorers ([`midnightexplorer.com`](https://midnightexplorer.com/)) primarily index unshielded blocks and UTXO token transfers, while smart contract execution is verified directly through the Midnight Indexer.
 
 ### Verification Methods:
 
