@@ -4,14 +4,14 @@
 
 <div align="center">
 
-[![CI/CD Pipeline](https://github.com/techishan432/psa/actions/workflows/ci.yaml/badge.svg)](https://github.com/techishan432/psa/actions)
+[![CI/CD Pipeline](https://github.com/techishan432/Aurora/actions/workflows/ci.yaml/badge.svg)](https://github.com/techishan432/Aurora/actions)
 [![Midnight Preprod](https://img.shields.io/badge/Midnight-Preprod-7c3aed?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=)](https://midnight.network)
 [![Compact Language](https://img.shields.io/badge/Compact-v0.23-6366f1)](https://docs.midnight.network)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24.11.1-339933?logo=node.js)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)](https://www.typescriptlang.org)
 
-[**Live Web Application**](https://psa-two.vercel.app/) • [**Midnight Explorer**](https://midnightexplorer.com/) • [**Video Demonstration**](https://youtu.be/aPLioWkmiYI) • [**GitHub Repository**](https://github.com/techishan432/psa)
+[**Live Web Application**](https://psa-two.vercel.app/) • [**Midnight Explorer**](https://midnightexplorer.com/) • [**Video Demonstration**](https://youtu.be/aPLioWkmiYI) • [**GitHub Repository**](https://github.com/techishan432/Aurora)
 
 </div>
 
@@ -28,7 +28,7 @@
 | ⚡ **Midnight Indexer GraphQL API** | [**`https://indexer.preprod.midnight.network/api/v4/graphql`**](https://indexer.preprod.midnight.network/api/v4/graphql) |
 | 🌐 **Live Web Application** | [**https://psa-two.vercel.app/**](https://psa-two.vercel.app/) |
 | 📺 **Demonstration Video** | [**https://youtu.be/aPLioWkmiYI**](https://youtu.be/aPLioWkmiYI) |
-| 📦 **GitHub Repository** | [**https://github.com/techishan432/psa**](https://github.com/techishan432/psa) |
+| 📦 **GitHub Repository** | [**https://github.com/techishan432/Aurora**](https://github.com/techishan432/Aurora) |
 | ⚙️ **CI/CD Build Workflow** | [**`.github/workflows/ci.yaml`**](.github/workflows/ci.yaml) |
 | 📄 **Compact v0.23 Smart Contract** | [**`contract/src/attendance.compact`**](contract/src/attendance.compact) |
 
@@ -292,7 +292,7 @@ export circuit studentNullifier(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/techishan432/psa.git
+git clone https://github.com/techishan432/Aurora.git
 cd psa
 npm install
 ```
