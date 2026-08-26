@@ -64,7 +64,11 @@ export function SettingsTab() {
 
             <div style={{ marginTop: '0.5rem' }}>
               <a
-                href="https://midnightexplorer.com/"
+                href={
+                  config.contractAddress && config.contractAddress !== '<YOUR_DEPLOYED_CONTRACT_ADDRESS>'
+                    ? `https://${config.network === 'mainnet' ? '' : 'preprod.'}midnightexplorer.com/contracts/0x${config.contractAddress.replace(/^0x/, '')}`
+                    : 'https://preprod.midnightexplorer.com/'
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-secondary"

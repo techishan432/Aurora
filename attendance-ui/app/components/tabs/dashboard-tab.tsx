@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { shortenAddress } from '../../../lib/format';
+import { config } from '../../../lib/config';
 import { useAttendanceStore, type TransactionStatus } from '../../../store/use-attendance-store';
 import { Badge, type BadgeTone } from '../badge';
 import { Button } from '../button';
@@ -483,7 +484,11 @@ export function DashboardTab({
 
           <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
             <a
-              href="https://midnightexplorer.com/"
+              href={
+                config.contractAddress && config.contractAddress !== '<YOUR_DEPLOYED_CONTRACT_ADDRESS>'
+                  ? `https://${config.network === 'mainnet' ? '' : 'preprod.'}midnightexplorer.com/contracts/0x${config.contractAddress.replace(/^0x/, '')}`
+                  : 'https://preprod.midnightexplorer.com/'
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary"

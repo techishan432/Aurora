@@ -21,10 +21,10 @@
 
 | Entity / Resource | On-Chain Identifier / Hash | Direct Hyperlink & Action |
 | :--- | :--- | :--- |
-| 📜 **Deployed Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Midnight Explorer ↗**](https://midnightexplorer.com/) |
-| 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` | [**Inspect Deployment Transaction ↗**](https://midnightexplorer.com/) |
-| 👛 **Deployer Shielded Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` | [**Inspect Wallet on Midnight Explorer ↗**](https://midnightexplorer.com/) |
-| 🔍 **Midnight Block Explorer** | `https://midnightexplorer.com/` | [**Open Midnight Explorer ↗**](https://midnightexplorer.com/) |
+| 📜 **Deployed Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) |
+| 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d) |
+| 👛 **Deployer Shielded Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` | [**Inspect Wallet on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69) |
+| 🔍 **Midnight Preprod Explorer** | `https://preprod.midnightexplorer.com/` | [**Open Preprod Explorer ↗**](https://preprod.midnightexplorer.com/) |
 | ⚡ **Midnight Indexer GraphQL API** | `https://indexer.preprod.midnight.network/api/v4/graphql` | [**Query Live GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql) |
 | 🌐 **Live Web Application (Vercel)** | `https://psa-two.vercel.app/` | [**Launch Aurora Web DApp ↗**](https://psa-two.vercel.app/) |
 | 📺 **Demonstration Video (YouTube)** | `https://youtu.be/aPLioWkmiYI` | [**Watch Demonstration Video ↗**](https://youtu.be/aPLioWkmiYI) |
@@ -33,12 +33,14 @@
 
 ---
 
-## 🔗 Direct Contract Verification on Midnight Explorer
+## 🔗 Direct Contract Verification on Midnight Explorer & Preprod Indexer
 
 The smart contract is live and deployed on the Midnight Network Preprod testnet:
-- **Contract Address Direct Link**: [**Inspect `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Midnight Explorer ↗**](https://midnightexplorer.com/)
-- **Deployment Transaction Direct Link**: [**Inspect Tx `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Midnight Explorer ↗**](https://midnightexplorer.com/)
-- **Deployer Wallet Direct Link**: [**Inspect Wallet `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` on Midnight Explorer ↗**](https://midnightexplorer.com/)
+- **Direct Preprod Contract Link**: [**Inspect `0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599)
+- **Direct Mainnet Explorer Link**: [**Inspect `0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599)
+- **Direct Deployment Transaction Link**: [**Inspect Tx `0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/transactions/0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d)
+- **Direct Deployer Wallet Link**: [**Inspect Wallet `0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69)
+- **Direct GraphQL Query Link**: [**Query Midnight Preprod GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql)
 
 ---
 
