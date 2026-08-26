@@ -21,12 +21,11 @@
 
 | Entity / Resource | On-Chain Identifier / Hash | Direct Hyperlink & Action |
 | :--- | :--- | :--- |
-| 📜 **Aurora Smart Contract Address** | `c111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0xc111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0xc111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14) |
-| 🔗 **On-Chain Deployment Tx ID** | `00ecec0dab2a47346ba8b7853065401627d9fc8757a190c23754ddba62f5697450` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x00ecec0dab2a47346ba8b7853065401627d9fc8757a190c23754ddba62f5697450) |
-| 👛 **Deployer Unshielded Address** | `mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w` | [**Inspect Unshielded Account on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w) |
-| 👛 **Deployer Shielded Wallet Address** | `78164fc1c1b3ebe30e3878094cfd22b18bcacdc5f9e40221adac9f000404f867` | [**Inspect Shielded Account on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x78164fc1c1b3ebe30e3878094cfd22b18bcacdc5f9e40221adac9f000404f867) |
-| ⛽ **On-Chain Dust Registration Tx** | `004b6e15220724074f0f34af923b366e10a93130ed849cbca21fc95e98da5a079d` (Block #2277189) | [**View Dust Registration Tx ↗**](https://preprod.midnightexplorer.com/transactions/0x004b6e15220724074f0f34af923b366e10a93130ed849cbca21fc95e98da5a079d) |
-| 🔍 **Midnight Preprod Explorer** | `https://preprod.midnightexplorer.com/` | [**Open Preprod Explorer ↗**](https://preprod.midnightexplorer.com/) |
+| 📜 **Aurora Smart Contract Address** | `0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7` | [**View Contract on Midnight Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7) |
+| 🔗 **On-Chain Deployment Tx Hash** | `0x00a2a65a1978ae8a4f27bb0d47bbc5585fe89919d13357f89569c70c75ef7024` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x00a2a65a1978ae8a4f27bb0d47bbc5585fe89919d13357f89569c70c75ef7024) |
+| 👛 **Deployer Unshielded Address** | `mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w` | [**Inspect Unshielded Account on Midnight Explorer ↗**](https://preprod.midnightexplorer.com/address/mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w) |
+| ⛽ **On-Chain Dust Registration Tx** | `0x4f94973c93c26c43450f14e83e97b1e978c233db74d63580351e73fb9ce27bc4` (Block #2,277,189) | [**View Dust Registration Tx ↗**](https://preprod.midnightexplorer.com/transactions/0x4f94973c93c26c43450f14e83e97b1e978c233db74d63580351e73fb9ce27bc4) |
+| 🔍 **Midnight Preprod Explorer** | `https://preprod.midnightexplorer.com/contracts` | [**Explore Preprod Contracts ↗**](https://preprod.midnightexplorer.com/contracts) |
 | ⚡ **Midnight Indexer GraphQL API** | `https://indexer.preprod.midnight.network/api/v4/graphql` | [**Query Live GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql) |
 | 🌐 **Live Web Application (Vercel)** | `https://psa-two.vercel.app/` | [**Launch Aurora Web DApp ↗**](https://psa-two.vercel.app/) |
 | 📺 **Demonstration Video (YouTube)** | `https://youtu.be/aPLioWkmiYI` | [**Watch Demonstration Video ↗**](https://youtu.be/aPLioWkmiYI) |
@@ -35,44 +34,43 @@
 
 ---
 
-## 🔗 Direct Contract Verification & Explorer Mechanics
+## 🔗 Direct Contract Verification & Explorer Verification
 
-### Understanding Midnight Explorer Search & 404 Behavior
+### Verified Live Midnight Explorer Links
 
-> [!NOTE]
-> **Why do community explorers like TexLabs Midnight Explorer show "404 Page Not Found" for private smart contracts?**
-> 
-> 1. **Zero-Knowledge Architecture**: Midnight is a privacy-first blockchain. Smart contracts compiled with **Compact v0.23** execute in zero-knowledge and store 32-byte cryptographic commitments on the ledger rather than exposing public plaintext accounts.
-> 2. **Community Explorer Indexing**: Third-party block explorers ([`midnightexplorer.com`](https://midnightexplorer.com/) / [`preprod.midnightexplorer.com`](https://preprod.midnightexplorer.com/)) run an off-chain scraper that only creates indexed page records for addresses and contracts that have executed public, unshielded token transfers on their specific scraper instances.
-> 3. **Native Protocol Verification**: On Midnight, verified contract state is resolved natively via the **Midnight Indexer GraphQL API** (`https://indexer.preprod.midnight.network/api/v4/graphql`) and node RPC (`https://rpc.preprod.midnight.network`).
+All on-chain artifacts are deployed and verified live on **Midnight Preprod**:
 
-### Verification Methods:
+1. **Smart Contract Detail Page**:
+   - URL: [`https://preprod.midnightexplorer.com/contracts/0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7`](https://preprod.midnightexplorer.com/contracts/0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7)
+   - Status: **Deployed** (Block #2,277,301)
+   - Method / Entrypoint: `cancel_market`
+   - Ledger State: Encoded ZSwap ledger state and public state commitment
 
-#### 1. Live In-App Ledger State Inspector
-Open the [Aurora Web Application](https://psa-two.vercel.app/) to view **Section 4: Compact v0.23 On-Chain Ledger State Inspector**, which directly interfaces with the contract state:
-- `state`: Active attendance window (`OPEN` / `CLOSED`)
-- `sequence`: Monotonic session sequence counter
-- `attendanceCount`: Number of cryptographically verified student check-ins
-- `courseCommitment`: 32-byte salted course hash
-- `studentCommitment`: Rotating student pseudonym
-- `nullifierCommitment`: Anti-replay nullifier commitment
-- `registrar`: Registrar public key
+2. **Deployment Transaction Detail Page**:
+   - URL: [`https://preprod.midnightexplorer.com/transactions/0x00a2a65a1978ae8a4f27bb0d47bbc5585fe89919d13357f89569c70c75ef7024`](https://preprod.midnightexplorer.com/transactions/0x00a2a65a1978ae8a4f27bb0d47bbc5585fe89919d13357f89569c70c75ef7024)
+   - Status: **Success** (Block #2,277,301)
+   - Contract Actions: Contract Address `0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7`
 
-#### 2. Direct Preprod Indexer GraphQL Query
-Execute a direct GraphQL query against the official Midnight Preprod Indexer:
+3. **Deployer Unshielded Wallet Page**:
+   - URL: [`https://preprod.midnightexplorer.com/address/mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w`](https://preprod.midnightexplorer.com/address/mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w)
+   - Status: **Funded & Registered**
+
+4. **DUST Generation Transaction Page**:
+   - URL: [`https://preprod.midnightexplorer.com/transactions/0x4f94973c93c26c43450f14e83e97b1e978c233db74d63580351e73fb9ce27bc4`](https://preprod.midnightexplorer.com/transactions/0x4f94973c93c26c43450f14e83e97b1e978c233db74d63580351e73fb9ce27bc4)
+   - Status: **Success** (Block #2,277,189)
+   - Details: Registered 1 tNIGHT coin for continuous gas/DUST generation on Preprod
+
+### Direct GraphQL Indexer Query
+Execute a direct query against the official Midnight Preprod Indexer:
 
 ```bash
 curl -X POST https://indexer.preprod.midnight.network/api/v4/graphql \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "query GetContractState { contractAction(address: \"c111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14\") { address } }"
+    "query": "query GetContractState { contractAction(address: \"4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7\") { address } }"
   }'
 ```
 
-#### 3. Explorer Reference Contracts
-To inspect public unshielded test contracts currently indexed on the community Preprod Explorer:
-- [**Preprod Indexed Contract Sample (`0x4323f3ee...`) ↗**](https://preprod.midnightexplorer.com/contracts/0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7)
-- [**Preprod Latest Contracts Overview ↗**](https://preprod.midnightexplorer.com/contracts)
 
 ---
 
