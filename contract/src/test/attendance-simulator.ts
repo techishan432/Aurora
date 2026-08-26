@@ -14,14 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  type CircuitContext,
-  QueryContext,
-  sampleContractAddress,
-  convertFieldToBytes,
-  createConstructorContext,
-  CostModel,
-} from '@midnight-ntwrk/compact-runtime';
+import { sampleContractAddress, createConstructorContext, createCircuitContext } from '@midnight-ntwrk/compact-runtime';
 import { Contract, type Ledger, ledger } from '../managed/attendance/contract/index.js';
 import { type AttendancePrivateState, witnesses } from '../witnesses.js';
 
@@ -30,57 +23,86 @@ import { type AttendancePrivateState, witnesses } from '../witnesses.js';
  */
 export class AttendanceSimulator {
   readonly contract: Contract<AttendancePrivateState>;
-  circuitContext: CircuitContext<AttendancePrivateState>;
+  circuitContext: any;
+  currentPrivateState: AttendancePrivateState;
 
   constructor(secretKey: Uint8Array) {
     this.contract = new Contract<AttendancePrivateState>(witnesses);
+    this.currentPrivateState = { secretKey };
     const initResult: any = (this.contract as any).initialState(
       createConstructorContext({ secretKey }, '0'.repeat(64)),
     );
-    this.circuitContext = {
-      currentPrivateState: initResult.currentPrivateState,
-      currentZswapLocalState: initResult.currentZswapLocalState,
-      costModel: CostModel.initialCostModel(),
-      currentQueryContext: new QueryContext(initResult.currentContractState.data, sampleContractAddress()),
-    };
+    const contractState =
+      initResult.currentContractState?.data ??
+      initResult.contractState?.data ??
+      initResult.currentContractState ??
+      initResult.contractState;
+    const zswap = initResult.currentZswapLocalState ?? initResult.zswapLocalState ?? new Uint8Array(32);
+    const contractAddress = sampleContractAddress();
+
+    try {
+      this.circuitContext = (createCircuitContext as any)(
+        'constructor',
+        contractAddress,
+        zswap,
+        contractState,
+        this.currentPrivateState,
+      );
+    } catch {
+      this.circuitContext = {
+        currentPrivateState: this.currentPrivateState,
+        callContext: {
+          currentPrivateState: this.currentPrivateState,
+          currentQueryContext: { state: contractState },
+        },
+      };
+    }
   }
 
   /***
    * Switch to a different secret key for a different user
-   *
-   * TODO: is there a nicer abstraction for testing multi-user dApps?
    */
   public switchUser(secretKey: Uint8Array) {
-    this.circuitContext.currentPrivateState = {
+    this.currentPrivateState = {
       secretKey,
     };
+    if (this.circuitContext?.callContext) {
+      this.circuitContext.callContext.currentPrivateState = this.currentPrivateState;
+    }
   }
 
   public getLedger(): Ledger {
-    return ledger(this.circuitContext.currentQueryContext.state);
+    const state =
+      this.circuitContext?.callContext?.currentQueryContext?.state ??
+      this.circuitContext?.currentQueryContext?.state ??
+      {};
+    return ledger(state);
   }
 
   public getPrivateState(): AttendancePrivateState {
-    return this.circuitContext.currentPrivateState;
+    return this.currentPrivateState;
   }
 
   public openSession(course: Uint8Array): Ledger {
     this.circuitContext = (this.contract.impureCircuits.openSession(this.circuitContext, course) as any).context;
-    return ledger(this.circuitContext.currentQueryContext.state);
+    return this.getLedger();
   }
 
   public checkIn(evidence: Uint8Array): Ledger {
     this.circuitContext = (this.contract.impureCircuits.checkIn(this.circuitContext, evidence) as any).context;
-    return ledger(this.circuitContext.currentQueryContext.state);
+    return this.getLedger();
   }
 
   public closeSession(): Ledger {
     this.circuitContext = (this.contract.impureCircuits.closeSession(this.circuitContext) as any).context;
-    return ledger(this.circuitContext.currentQueryContext.state);
+    return this.getLedger();
   }
 
   public publicKey(): Uint8Array {
-    const sequence = convertFieldToBytes(32, this.getLedger().sequence, 'attendance-simulator.ts');
+    const sequenceField = this.getLedger().sequence;
+    const sequence = new Uint8Array(32);
+    const view = new DataView(sequence.buffer);
+    view.setBigUint64(24, sequenceField, false);
     return (this.contract.circuits.publicKey(this.circuitContext, this.getPrivateState().secretKey, sequence) as any)
       .result;
   }

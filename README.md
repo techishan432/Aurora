@@ -5,7 +5,7 @@
 <div align="center">
 
 [![CI/CD Pipeline](https://github.com/techishan432/Aurora/actions/workflows/ci.yaml/badge.svg)](https://github.com/techishan432/Aurora/actions)
-[![Midnight Preprod](https://img.shields.io/badge/Midnight-Preprod-7c3aed?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=)](https://midnight.network)
+[![Midnight Preprod](https://img.shields.io/badge/Midnight-Preprod-7c3aed?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48L3N2Zz4=)](https://midnight.network)
 [![Compact Language](https://img.shields.io/badge/Compact-v0.23-6366f1)](https://docs.midnight.network)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D24.11.1-339933?logo=node.js)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -17,28 +17,28 @@
 
 ---
 
-## 🌐 Verified Midnight Deployment & Live Links
+## 🌐 Verified Midnight On-Chain Deployment & Network Addresses
 
-| Resource | Value / Direct Hyperlink |
-| :--- | :--- |
-| 📜 **Deployed Smart Contract Address** | [**`861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599`**](https://midnightexplorer.com/) |
-| 🔗 **On-Chain Deployment Tx ID** | [**`006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d`**](https://midnightexplorer.com/) |
-| 👛 **Deployer Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` |
-| 🔍 **Midnight Block Explorer** | [**https://midnightexplorer.com/**](https://midnightexplorer.com/) |
-| ⚡ **Midnight Indexer GraphQL API** | [**`https://indexer.preprod.midnight.network/api/v4/graphql`**](https://indexer.preprod.midnight.network/api/v4/graphql) |
-| 🌐 **Live Web Application** | [**https://psa-two.vercel.app/**](https://psa-two.vercel.app/) |
-| 📺 **Demonstration Video** | [**https://youtu.be/aPLioWkmiYI**](https://youtu.be/aPLioWkmiYI) |
-| 📦 **GitHub Repository** | [**https://github.com/techishan432/Aurora**](https://github.com/techishan432/Aurora) |
-| ⚙️ **CI/CD Build Workflow** | [**`.github/workflows/ci.yaml`**](.github/workflows/ci.yaml) |
-| 📄 **Compact v0.23 Smart Contract** | [**`contract/src/attendance.compact`**](contract/src/attendance.compact) |
+| Entity / Resource | On-Chain Identifier / Hash | Direct Hyperlink & Action |
+| :--- | :--- | :--- |
+| 📜 **Deployed Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Midnight Explorer ↗**](https://midnightexplorer.com/) |
+| 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` | [**Inspect Deployment Transaction ↗**](https://midnightexplorer.com/) |
+| 👛 **Deployer Shielded Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` | [**Inspect Wallet on Midnight Explorer ↗**](https://midnightexplorer.com/) |
+| 🔍 **Midnight Block Explorer** | `https://midnightexplorer.com/` | [**Open Midnight Explorer ↗**](https://midnightexplorer.com/) |
+| ⚡ **Midnight Indexer GraphQL API** | `https://indexer.preprod.midnight.network/api/v4/graphql` | [**Query Live GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql) |
+| 🌐 **Live Web Application (Vercel)** | `https://psa-two.vercel.app/` | [**Launch Aurora Web DApp ↗**](https://psa-two.vercel.app/) |
+| 📺 **Demonstration Video (YouTube)** | `https://youtu.be/aPLioWkmiYI` | [**Watch Demonstration Video ↗**](https://youtu.be/aPLioWkmiYI) |
+| 📦 **GitHub Source Repository** | `https://github.com/techishan432/Aurora` | [**View GitHub Repository ↗**](https://github.com/techishan432/Aurora) |
+| 📄 **Compact v0.23 Smart Contract** | [`contract/src/attendance.compact`](contract/src/attendance.compact) | [**View Compact Source Code ↗**](contract/src/attendance.compact) |
 
 ---
 
-## 🔗 Live On-Chain Contract on Midnight Explorer
+## 🔗 Direct Contract Verification on Midnight Explorer
 
-The deployed Compact smart contract is active on the Midnight Network:
-- **Contract Address Link**: [**Inspect `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Midnight Explorer ↗**](https://midnightexplorer.com/)
-- **Deployment Transaction**: [**Inspect Tx `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Midnight Explorer ↗**](https://midnightexplorer.com/)
+The smart contract is live and deployed on the Midnight Network Preprod testnet:
+- **Contract Address Direct Link**: [**Inspect `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Midnight Explorer ↗**](https://midnightexplorer.com/)
+- **Deployment Transaction Direct Link**: [**Inspect Tx `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Midnight Explorer ↗**](https://midnightexplorer.com/)
+- **Deployer Wallet Direct Link**: [**Inspect Wallet `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` on Midnight Explorer ↗**](https://midnightexplorer.com/)
 
 ---
 
@@ -200,11 +200,6 @@ sequenceDiagram
 ### Desktop View: On-Chain Ledger State & Verified Student Registry
 ![Desktop Ledger State](assets/desktop_ledger_state.png)
 
-### Responsive Mobile View
-<div align="center">
-  <img src="assets/mobile_dashboard.png" alt="Mobile Dashboard View" width="400" />
-</div>
-
 ---
 
 ## 💻 Compact v0.23 Smart Contract Specification
@@ -293,7 +288,7 @@ export circuit studentNullifier(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {
 ### 1. Clone & Install Dependencies
 ```bash
 git clone https://github.com/techishan432/Aurora.git
-cd psa
+cd Aurora
 npm install
 ```
 

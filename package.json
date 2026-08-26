@@ -17,6 +17,7 @@
     ]
   },
   "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
     "@midnight-ntwrk/dapp-connector-api": "4.0.1",
     "@midnight-ntwrk/midnight-js-contracts": "4.1.1",
     "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "4.1.1",
@@ -61,5 +62,8 @@
     "vite": "^8.0.14",
     "vite-plugin-top-level-await": "^1.6.0",
     "vite-plugin-wasm": "^3.6.0"
+  },
+  "overrides": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0"
   }
 }
