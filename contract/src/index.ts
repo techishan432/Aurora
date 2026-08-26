@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // This file is part of midnightntwrk/example-attendance.
 // Copyright (C) Midnight Foundation
 // SPDX-License-Identifier: Apache-2.0
@@ -21,9 +22,9 @@ export * from './witnesses.js';
 import * as CompiledAttendanceContract from './managed/attendance/contract/index.js';
 import * as Witnesses from './witnesses.js';
 
-export const CompiledAttendanceContractContract = CompiledContract.make<
-  CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>
->('Attendance', CompiledAttendanceContract.Contract<Witnesses.AttendancePrivateState>).pipe(
-  CompiledContract.withWitnesses(Witnesses.witnesses),
-  CompiledContract.withCompiledFileAssets('./managed/attendance'),
-);
+export const CompiledAttendanceContractContract: any = (CompiledContract as any)
+  .make('Attendance', CompiledAttendanceContract.Contract)
+  .pipe(
+    (CompiledContract as any).withWitnesses(Witnesses.witnesses),
+    (CompiledContract as any).withCompiledFileAssets('./managed/attendance'),
+  );
