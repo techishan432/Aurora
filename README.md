@@ -21,9 +21,11 @@
 
 | Entity / Resource | On-Chain Identifier / Hash | Direct Hyperlink & Action |
 | :--- | :--- | :--- |
-| 📜 **Aurora Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) |
-| 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d) |
-| 👛 **Deployer Shielded Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` | [**Inspect Wallet on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69) |
+| 📜 **Aurora Smart Contract Address** | `c111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0xc111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0xc111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14) |
+| 🔗 **On-Chain Deployment Tx ID** | `00ecec0dab2a47346ba8b7853065401627d9fc8757a190c23754ddba62f5697450` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x00ecec0dab2a47346ba8b7853065401627d9fc8757a190c23754ddba62f5697450) |
+| 👛 **Deployer Unshielded Address** | `mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w` | [**Inspect Unshielded Account on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/mn_addr_preprod1rumrul6ndwktwlur27u28wd8ugwqqnyhx6s6pnnsudvj7teg4mhskfv36w) |
+| 👛 **Deployer Shielded Wallet Address** | `78164fc1c1b3ebe30e3878094cfd22b18bcacdc5f9e40221adac9f000404f867` | [**Inspect Shielded Account on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x78164fc1c1b3ebe30e3878094cfd22b18bcacdc5f9e40221adac9f000404f867) |
+| ⛽ **On-Chain Dust Registration Tx** | `004b6e15220724074f0f34af923b366e10a93130ed849cbca21fc95e98da5a079d` (Block #2277189) | [**View Dust Registration Tx ↗**](https://preprod.midnightexplorer.com/transactions/0x004b6e15220724074f0f34af923b366e10a93130ed849cbca21fc95e98da5a079d) |
 | 🔍 **Midnight Preprod Explorer** | `https://preprod.midnightexplorer.com/` | [**Open Preprod Explorer ↗**](https://preprod.midnightexplorer.com/) |
 | ⚡ **Midnight Indexer GraphQL API** | `https://indexer.preprod.midnight.network/api/v4/graphql` | [**Query Live GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql) |
 | 🌐 **Live Web Application (Vercel)** | `https://psa-two.vercel.app/` | [**Launch Aurora Web DApp ↗**](https://psa-two.vercel.app/) |
@@ -63,7 +65,7 @@ Execute a direct GraphQL query against the official Midnight Preprod Indexer:
 curl -X POST https://indexer.preprod.midnight.network/api/v4/graphql \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "query GetContractState { contractAction(address: \"861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599\") { address } }"
+    "query": "query GetContractState { contractAction(address: \"c111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14\") { address } }"
   }'
 ```
 
@@ -348,7 +350,7 @@ npm run build
 ## 📋 RiseIn / Midnight Hackathon Submission Checklist
 
 - [x] **Level 3 Multi-Role ZK Architecture**: Student verification with local secret witness claims, rotating pseudonyms, and anti-replay nullifiers.
-- [x] **Verified Smart Contract Deployment**: Deployed with proof server (`861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599`, Tx: `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d`).
+- [x] **Verified Smart Contract Deployment**: Deployed with proof server (`c111d0491fba3b20359dbdf4c36ec6a8de3ca1c0aa451a0e6330b8fad8c2ce14`, Tx: `00ecec0dab2a47346ba8b7853065401627d9fc8757a190c23754ddba62f5697450`).
 - [x] **Compact v0.23 Compiler Integration**: Automated compilation via `compact compile` with zero errors.
 - [x] **Product Proposal**: Approved specification in [PROPOSAL.md](./PROPOSAL.md).
 - [x] **Responsive Next.js 16 Frontend**: Full Atmospheric Glass UI in `attendance-ui/` supporting desktop & mobile views.

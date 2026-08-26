@@ -73,6 +73,33 @@ const waitForUnshieldedBalance = (logger: Logger, wallet: any, tokenRaw: string,
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const waitForDustBalance = (logger: Logger, wallet: any, timeoutMs = 600_000): Promise<any> => {
+  logger.info('Waiting for DUST balance to sync and generate from registered UTXO...');
+  return firstValueFrom(
+    wallet.state().pipe(
+      Rx.throttleTime(4000),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Rx.tap((state: any) => {
+        const balance = state.dust?.balance?.(new Date()) ?? 0n;
+        const appliedIndex = state.dust?.state?.progress?.appliedIndex ?? 0n;
+        const highestRelevant = state.dust?.state?.progress?.highestRelevantWalletIndex ?? 0n;
+        logger.info(`[DUST Sync Progress] appliedIndex=${appliedIndex}/${highestRelevant}, availableDust=${balance}`);
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Rx.filter((state: any) => {
+        const balance = state.dust?.balance?.(new Date()) ?? 0n;
+        return balance > 0n;
+      }),
+      Rx.tap(() => logger.info('✓ DUST balance confirmed! Ready to broadcast deployment.')),
+      Rx.timeout({
+        each: timeoutMs,
+        with: () => Rx.throwError(() => new Error(`Timeout waiting for dust after ${timeoutMs}ms`)),
+      }),
+    ),
+  );
+};
+
 export const run = async (config: Config, environment: TestEnvironment, logger: Logger): Promise<void> => {
   logger.info('=== Attendance Contract Deployment to Preview ===');
 
@@ -125,20 +152,8 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
       await registerNightUtxosForDust(walletProvider.wallet, walletProvider.unshieldedKeystore, logger);
     }
 
-    // Wait for the dust balance to confirm
-    let dustBalance = 0n;
-    logger.info('Waiting for dust balance to generate from registered UTXOs...');
-    while (true) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const state: any = await firstValueFrom(walletProvider.wallet.state());
-      dustBalance = state.dust.balance(new Date()) || 0n;
-      if (dustBalance > 0n) {
-        logger.info(`✓ Dust balance is now ${dustBalance}. Ready to deploy!`);
-        break;
-      }
-      logger.info(`Waiting for dust balance to become available... currently ${dustBalance}`);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
+    // Wait for the dust balance to confirm and become active
+    await waitForDustBalance(logger, walletProvider.wallet, 600_000);
 
     // Initialize providers using testkit helpers
     logger.info('Initializing contract providers...');
