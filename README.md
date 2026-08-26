@@ -302,7 +302,20 @@ npm test
 cd ..
 ```
 
-### 3. Deploy via Standalone / Remote CLI
+### 3. Deploy Contract to Midnight Preprod or Local Standalone
+
+#### Option A: Deploy to Live Midnight Preprod Testnet
+```bash
+cd attendance-cli
+npm run preprod-remote
+```
+> **Funding your Preprod deployer wallet:**
+> 1. The CLI will display your unique unshielded address (`mn_addr_preprod...`).
+> 2. Open the [Nethermind Preprod Faucet](https://midnight-tmnight-preprod.nethermind.dev/) in your browser, paste the address, complete the Turnstile Captcha, and request testnet tokens.
+> 3. The CLI automatically detects the incoming NIGHT UTXO, registers it for DUST generation, and broadcasts the deployment transaction to `https://rpc.preprod.midnight.network`.
+> *(Tip: You can also provide an existing funded seed via `WALLET_SEED=<seed> npm run preprod-remote`.)*
+
+#### Option B: Deploy to Local Standalone Environment
 ```bash
 cd attendance-cli
 npm run standalone
