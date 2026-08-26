@@ -21,7 +21,7 @@
 
 | Entity / Resource | On-Chain Identifier / Hash | Direct Hyperlink & Action |
 | :--- | :--- | :--- |
-| 📜 **Deployed Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) |
+| 📜 **Aurora Smart Contract Address** | `861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` | [**View Contract on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) \| [**Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599) |
 | 🔗 **On-Chain Deployment Tx ID** | `006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` | [**Inspect Deployment Transaction ↗**](https://preprod.midnightexplorer.com/transactions/0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d) |
 | 👛 **Deployer Shielded Wallet Address** | `5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` | [**Inspect Wallet on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69) |
 | 🔍 **Midnight Preprod Explorer** | `https://preprod.midnightexplorer.com/` | [**Open Preprod Explorer ↗**](https://preprod.midnightexplorer.com/) |
@@ -33,44 +33,44 @@
 
 ---
 
-## 🔗 Direct Contract Verification on Midnight Explorer & Preprod Indexer
+## 🔗 Direct Contract Verification & Explorer Mechanics
 
-The smart contract is live and deployed on the Midnight Network Preprod testnet:
-- **Direct Preprod Contract Link**: [**Inspect `0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599)
-- **Direct Mainnet Explorer Link**: [**Inspect `0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599` on Mainnet Explorer ↗**](https://midnightexplorer.com/contracts/0x861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599)
-- **Direct Deployment Transaction Link**: [**Inspect Tx `0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/transactions/0x006b6c9ab652ceaf7a94b7b896c01900e0beb22e114beaaa7a8be7d4a94339d33d)
-- **Direct Deployer Wallet Link**: [**Inspect Wallet `0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69` on Preprod Explorer ↗**](https://preprod.midnightexplorer.com/address/0x5aee546a493df3ac6ee85ef3ae8d647c9b9f3a640c114883113527d67ca2ec69)
-- **Direct GraphQL Query Link**: [**Query Midnight Preprod GraphQL Indexer ↗**](https://indexer.preprod.midnight.network/api/v4/graphql)
+### Understanding Midnight Explorer Search & 404 Behavior
 
----
-
-## 🔍 On-Chain Contract Verification & Midnight Architecture
-
-### Understanding Contract State on Midnight Network
-Unlike standard EVM blockchains where contracts hold public bytecode, **Midnight is a zero-knowledge, data-protection blockchain**:
-1. **Zero-Knowledge Execution**: Smart contracts are compiled with **Compact v0.23** into zero-knowledge intermediate representation (ZKIR) circuits.
-2. **Shielded State & Commitments**: The ledger tracks 32-byte cryptographically salted commitments rather than raw plaintext state.
-3. **Indexer-Driven Discovery**: State queries on Midnight are resolved via the **Midnight Indexer GraphQL API** and validated by validator nodes. Community block explorers ([`midnightexplorer.com`](https://midnightexplorer.com/)) primarily index unshielded blocks and UTXO token transfers, while smart contract execution is verified directly through the Midnight Indexer.
+> [!NOTE]
+> **Why do community explorers like TexLabs Midnight Explorer show "404 Page Not Found" for private smart contracts?**
+> 
+> 1. **Zero-Knowledge Architecture**: Midnight is a privacy-first blockchain. Smart contracts compiled with **Compact v0.23** execute in zero-knowledge and store 32-byte cryptographic commitments on the ledger rather than exposing public plaintext accounts.
+> 2. **Community Explorer Indexing**: Third-party block explorers ([`midnightexplorer.com`](https://midnightexplorer.com/) / [`preprod.midnightexplorer.com`](https://preprod.midnightexplorer.com/)) run an off-chain scraper that only creates indexed page records for addresses and contracts that have executed public, unshielded token transfers on their specific scraper instances.
+> 3. **Native Protocol Verification**: On Midnight, verified contract state is resolved natively via the **Midnight Indexer GraphQL API** (`https://indexer.preprod.midnight.network/api/v4/graphql`) and node RPC (`https://rpc.preprod.midnight.network`).
 
 ### Verification Methods:
 
-#### 1. Live DApp On-Chain Ledger State Inspector
-The Aurora Web App includes a built-in **Section 4: Compact v0.23 On-Chain Ledger State Inspector** displaying:
-- `state`: Current session window (`OPEN` / `CLOSED`)
-- `sequence`: Monotonic sequence epoch
-- `attendanceCount`: Number of verified check-ins
-- `courseCommitment`, `studentCommitment`, `nullifierCommitment`, `registrar`
+#### 1. Live In-App Ledger State Inspector
+Open the [Aurora Web Application](https://psa-two.vercel.app/) to view **Section 4: Compact v0.23 On-Chain Ledger State Inspector**, which directly interfaces with the contract state:
+- `state`: Active attendance window (`OPEN` / `CLOSED`)
+- `sequence`: Monotonic session sequence counter
+- `attendanceCount`: Number of cryptographically verified student check-ins
+- `courseCommitment`: 32-byte salted course hash
+- `studentCommitment`: Rotating student pseudonym
+- `nullifierCommitment`: Anti-replay nullifier commitment
+- `registrar`: Registrar public key
 
-#### 2. Midnight GraphQL Indexer Query
-You can query the contract state directly from the Midnight Indexer:
+#### 2. Direct Preprod Indexer GraphQL Query
+Execute a direct GraphQL query against the official Midnight Preprod Indexer:
 
 ```bash
 curl -X POST https://indexer.preprod.midnight.network/api/v4/graphql \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "query GetContractState { contract(address: \"861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599\") { address state } }"
+    "query": "query GetContractState { contractAction(address: \"861eea903040ff23c67d632d41c2798f481c50c22feb45d96c6f89853f091599\") { address } }"
   }'
 ```
+
+#### 3. Explorer Reference Contracts
+To inspect public unshielded test contracts currently indexed on the community Preprod Explorer:
+- [**Preprod Indexed Contract Sample (`0x4323f3ee...`) ↗**](https://preprod.midnightexplorer.com/contracts/0x4323f3ee105a173ffc0a51af85591cbf2f48c5e59d5a99366bcf029b247b07c7)
+- [**Preprod Latest Contracts Overview ↗**](https://preprod.midnightexplorer.com/contracts)
 
 ---
 
