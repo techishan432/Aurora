@@ -13,6 +13,7 @@
     "standalone": "node --experimental-specifier-resolution=node --loader ts-node/esm src/launcher/standalone.ts",
     "preview-remote": "node --experimental-specifier-resolution=node --loader ts-node/esm src/launcher/preview.ts",
     "preprod-remote": "node --max-old-space-size=8192 --experimental-specifier-resolution=node --loader ts-node/esm src/launcher/preprod.ts",
+    "get-address": "node --max-old-space-size=8192 --experimental-specifier-resolution=node --loader ts-node/esm src/get-address.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
