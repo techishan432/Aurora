@@ -57,8 +57,7 @@ jspm_packages/
 *.njsproj
 *.sln
 
-# Compact
-managed/
+
 
 # Next.js
 .next/
