@@ -3,9 +3,10 @@ import type { Config } from './config.js';
 import type { TestEnvironment } from '@midnight-ntwrk/testkit-js';
 import { deployContract } from '@midnight-ntwrk/midnight-js-contracts';
 import { CompiledAttendanceContractContract, createAttendancePrivateState } from '@midnight-ntwrk/attendance-contract';
-import { initializeMidnightProviders } from '@midnight-ntwrk/testkit-js';
+import { initializeMidnightProviders, waitForFunds } from '@midnight-ntwrk/testkit-js';
 import { MidnightWalletProvider } from './midnight-wallet-provider.js';
 import { syncWallet } from './wallet-utils.js';
+import { firstValueFrom } from 'rxjs';
 
 export const run = async (config: Config, environment: TestEnvironment, logger: Logger): Promise<void> => {
   logger.info('=== Attendance Contract Deployment to Preview ===');
@@ -23,21 +24,28 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
 
     logger.info('Syncing wallet and waiting for Dust funds...');
     // We must register NIGHT UTXOs to Dust if we have no Dust, testkit-js has a helper for this:
-    const { waitForFunds } = await import('@midnight-ntwrk/testkit-js');
-    await waitForFunds(walletProvider.wallet, env, false, walletProvider.unshieldedKeystore as any);
-    
+    if (walletProvider.unshieldedKeystore) {
+      await waitForFunds(
+        walletProvider.wallet,
+        env,
+        false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        walletProvider.unshieldedKeystore as any,
+      );
+    }
+
     // Wait for the dust registration transaction to confirm
     let dustBalance = 0n;
     while (true) {
-        const state = await import('rxjs').then(Rx => Rx.firstValueFrom(walletProvider.wallet.state()));
-        dustBalance = state.dust.balance(new Date()) || 0n;
-        if (dustBalance > 0n) {
-            logger.info(`Dust balance is now ${dustBalance}. Ready to deploy!`);
-            break;
-        }
-        logger.info(`Waiting for dust balance to become available... currently ${dustBalance}`);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        await syncWallet(logger, walletProvider.wallet);
+      const state = await firstValueFrom(walletProvider.wallet.state());
+      dustBalance = state.dust.balance(new Date()) || 0n;
+      if (dustBalance > 0n) {
+        logger.info(`Dust balance is now ${dustBalance}. Ready to deploy!`);
+        break;
+      }
+      logger.info(`Waiting for dust balance to become available... currently ${dustBalance}`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await syncWallet(logger, walletProvider.wallet);
     }
 
     // Initialize providers using testkit helpers
@@ -51,13 +59,17 @@ export const run = async (config: Config, environment: TestEnvironment, logger: 
     const secretKey = crypto.getRandomValues(new Uint8Array(32));
     const initialPrivateState = createAttendancePrivateState(secretKey);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-    const deployed = await deployContract(providers as any, {
-      compiledContract: CompiledAttendanceContractContract,
-      privateStateKeyName: 'attendancePrivateState',
-      initialPrivateState,
-      args: [],
-    } as any);
+    const deployed = await deployContract(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      providers as any,
+      {
+        compiledContract: CompiledAttendanceContractContract,
+        privateStateKeyName: 'attendancePrivateState',
+        initialPrivateState,
+        args: [],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    );
 
     const contractAddress = deployed.deployTxData.public.contractAddress;
     logger.info('✓ Contract deployed successfully!');
