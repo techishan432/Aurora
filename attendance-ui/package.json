@@ -33,7 +33,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.41",
+    "@swc/core": "^1.16.1",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
