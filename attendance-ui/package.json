@@ -20,7 +20,7 @@
     "@midnight-ntwrk/dapp-connector-api": "4.0.1",
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.1.1",
-    "@tanstack/react-query": "^5.101.4",
+    "@tanstack/react-query": "^5.102.0",
     "@types/node": "^22.0.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
